@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Green Hall Navigation</string>
+    <string name="start_location_hint">Starting Location</string>
+    <string name="destination_hint">Destination</string>
+    <string name="menu_icon">Menu</string>
+    <string name="menu_item_1">Sub Item 1</string>
+    <string name="menu_item_2">Sub Item 2</string>
+    <string name="first_floor">Floor 1</string>
+    <string name="second_floor">Floor 2</string>
+    <string name="third_floor">Floor 3</string>
+    <string-array name="startRoomNums">
+        <item>Your Location</item>
+        <item>2100</item>
+        <item>3100</item>
+        <item>4100</item>
+        <item>5100</item>
+    </string-array>
+    <string-array name="destinationRoomNums">
+        <item>1100</item>
+        <item>2100</item>
+        <item>3100</item>
+        <item>4100</item>
+        <item>5100</item>
+    </string-array>
+</resources>
