@@ -168,7 +168,7 @@ public class PinchZoomPan extends View {
 
         float aspectRatio = (float) bitmap.getHeight()/(float) bitmap.getWidth();
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        mImageWidth = displayMetrics.widthPixels + 100;
+        mImageWidth = displayMetrics.widthPixels + 320;
         mImageHeight = Math.round(mImageWidth * aspectRatio);
         mBitmap = bitmap.createScaledBitmap(bitmap, mImageWidth, mImageHeight, false);
         invalidate();

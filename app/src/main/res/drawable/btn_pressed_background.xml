@@ -4,12 +4,10 @@
         android:radius="100dp"
         />
     <solid
-        android:color="@color/colorAccent"
+        android:color="@color/colorGreen"
         />
     <size
         android:width="50dp"
         android:height="30dp"
         />
-    </shape>
-
-
+</shape>

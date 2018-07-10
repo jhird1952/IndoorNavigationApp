@@ -8,18 +8,11 @@
     <string name="first_floor">Floor 1</string>
     <string name="second_floor">Floor 2</string>
     <string name="third_floor">Floor 3</string>
-    <string-array name="startRoomNums">
-        <item>Your Location</item>
-        <item>2100</item>
-        <item>3100</item>
-        <item>4100</item>
-        <item>5100</item>
-    </string-array>
-    <string-array name="destinationRoomNums">
-        <item>1100</item>
-        <item>2100</item>
-        <item>3100</item>
-        <item>4100</item>
-        <item>5100</item>
-    </string-array>
+    <string name="et_from_hint">Starting Location</string>
+    <string name="et_to_hint">Destination</string>
+    <string name="btn_navigate">Navigate</string>
+    <string name="btn_stairs">Stairs</string>
+    <string name="btn_both">Both</string>
+    <string name="btn_elevator">Elevator</string>
+    <string name="tv_to">to</string>
 </resources>
