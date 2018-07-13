@@ -2,7 +2,10 @@ package com.example.jake1.designproject;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -16,6 +19,13 @@ import java.io.IOException;
 
 public class PinchZoomPan extends View {
 
+    Paint blue_paintbrush_stroke;
+    Paint blue_paintbrush_blur;
+    Path path;
+
+    float[] coordinates = {200, 450, 600,450, 600, 600, 800, 600, 800, 450, 1000, 450, 1000, 800, 3000, 800, 3000, 100};
+
+    DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
     private Bitmap mBitmap;
     private int mImageWidth;
     private int mImageHeight;
@@ -128,6 +138,20 @@ public class PinchZoomPan extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        path = new Path();
+        blue_paintbrush_stroke = new Paint();
+        blue_paintbrush_stroke.setColor(getResources().getColor(R.color.colorPath));
+        blue_paintbrush_stroke.setStyle(Paint.Style.STROKE);
+        blue_paintbrush_stroke.setStrokeCap(Paint.Cap.ROUND);
+        blue_paintbrush_stroke.setStrokeWidth(20);
+
+        blue_paintbrush_blur = new Paint();
+        blue_paintbrush_blur.setColor(getResources().getColor(R.color.colorPathBlur));
+        blue_paintbrush_blur.setStyle(Paint.Style.STROKE);
+        blue_paintbrush_blur.setStrokeCap(Paint.Cap.ROUND);
+        blue_paintbrush_blur.setStrokeWidth(35);
+        blue_paintbrush_blur.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));
+
         if (mBitmap != null) {
             canvas.save();
 
@@ -149,9 +173,13 @@ public class PinchZoomPan extends View {
                 mPositionY = 0;
             }
 
+            makePath(coordinates);
+
             canvas.translate(mPositionX, mPositionY);
             canvas.scale(mScaleFactor, mScaleFactor);
             canvas.drawBitmap(mBitmap, 0, 0, null);
+            canvas.drawPath(path, blue_paintbrush_stroke);
+            canvas.drawPath(path, blue_paintbrush_blur);
             canvas.restore();
         }
     }
@@ -167,8 +195,8 @@ public class PinchZoomPan extends View {
         }
 
         float aspectRatio = (float) bitmap.getHeight()/(float) bitmap.getWidth();
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        mImageWidth = displayMetrics.widthPixels + 320;
+        //control how zoomed in map is on startup
+        mImageWidth = (int) (displayMetrics.widthPixels + (displayMetrics.widthPixels*0.4));
         mImageHeight = Math.round(mImageWidth * aspectRatio);
         mBitmap = bitmap.createScaledBitmap(bitmap, mImageWidth, mImageHeight, false);
         invalidate();
@@ -190,4 +218,18 @@ public class PinchZoomPan extends View {
             return true;
         }
     }
+
+    private void makePath(float[] coordinates){
+
+        path.moveTo(coordinates[0], coordinates[1]);
+
+        for (int i = 2; i < coordinates.length; i += 2) {
+
+            path.lineTo(coordinates[i], coordinates[i+1]);
+            path.moveTo(coordinates[i], coordinates[i+1]);
+
+        }
+
+    }
+
 }

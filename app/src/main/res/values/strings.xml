@@ -15,4 +15,5 @@
     <string name="btn_both">Both</string>
     <string name="btn_elevator">Elevator</string>
     <string name="tv_to">to</string>
+    <string name="btn_start_nav">Start</string>
 </resources>
