@@ -39,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView ivUTD;
     PopupMenu pumFrom;
     PopupMenu pumTo;
-
+    float[] noCoords;
+    float[] coords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         clNavBar = findViewById(R.id.clNavBar);
         pinchZoomPan = findViewById(R.id.pinchZoomPan);
+        //these arrays will be replaced with array from ArcGIS
+        noCoords = null;
+        coords = new float[] {0, 0, 600, 450, 600, 600, 800, 600, 800, 450, 1000, 450, 1000, 800, 1500, 800, 1500, 2250};
         etFrom = findViewById(R.id.etFrom);
         etTo = findViewById(R.id.etTo);
         tvTo = findViewById(R.id.tvTo);
@@ -66,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         pumTo = new PopupMenu(this, etTo);
 
         setSupportActionBar(toolbar);
-        loadImage(pinchZoomPan, 0);
+        pinchZoomPan.loadImageOnCanvas(0);
         loadPrefs();
 
         pumFrom.getMenuInflater().inflate( R.menu.start_location_menu, pumFrom.getMenu());
@@ -132,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor1();
-                loadImage(pinchZoomPan, 0);
+                pinchZoomPan.loadImageOnCanvas(0);
             }
         });
 
@@ -140,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor2();
-                loadImage(pinchZoomPan, 1);
+                pinchZoomPan.loadImageOnCanvas(1);
             }
         });
 
@@ -148,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor3();
-                loadImage(pinchZoomPan, 2);
+                pinchZoomPan.loadImageOnCanvas(2);
             }
         });
 
@@ -172,6 +176,9 @@ public class MainActivity extends AppCompatActivity {
                 imBtnBackArrow.setVisibility(View.VISIBLE);
                 btnStartNav.setVisibility(View.VISIBLE);
 
+                pinchZoomPan.popCoordinates(coords);
+                pinchZoomPan.invalidate();
+
             }
         });
 
@@ -194,6 +201,9 @@ public class MainActivity extends AppCompatActivity {
                 ivUTD.setVisibility(View.VISIBLE);
                 btnStartNav.setVisibility(View.GONE);
 
+                pinchZoomPan.popCoordinates(noCoords);
+                pinchZoomPan.invalidate();
+
             }
         });
 
@@ -211,24 +221,6 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Menu selected", Toast.LENGTH_SHORT).show();
         return true;
-
-    }
-
-    private void loadImage(PinchZoomPan pinchZoomPan, int floorNum) {
-
-        Uri mapUri = null;
-
-        if (floorNum == 0) {
-            mapUri = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape");
-        }
-        else if (floorNum == 1) {
-            mapUri = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape2");
-        }
-        else if (floorNum == 2) {
-            mapUri = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape3");
-        }
-
-        pinchZoomPan.loadImageOnCanvas(mapUri);
 
     }
 

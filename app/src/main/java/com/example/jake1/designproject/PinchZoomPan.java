@@ -23,9 +23,12 @@ public class PinchZoomPan extends View {
     Paint blue_paintbrush_blur;
     Path path;
 
-    float[] coordinates = {200, 450, 600,450, 600, 600, 800, 600, 800, 450, 1000, 450, 1000, 800, 3000, 800, 3000, 100};
+    float[] mCoordinates;
+    int mFloor;
+    Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape");;
+    Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape2");;
+    Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape3");;
 
-    DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
     private Bitmap mBitmap;
     private int mImageWidth;
     private int mImageHeight;
@@ -139,6 +142,13 @@ public class PinchZoomPan extends View {
         super.onDraw(canvas);
 
         path = new Path();
+
+        if (mCoordinates != null) {
+
+            makePath(mCoordinates);
+
+        }
+
         blue_paintbrush_stroke = new Paint();
         blue_paintbrush_stroke.setColor(getResources().getColor(R.color.colorPath));
         blue_paintbrush_stroke.setStyle(Paint.Style.STROKE);
@@ -173,34 +183,49 @@ public class PinchZoomPan extends View {
                 mPositionY = 0;
             }
 
-            makePath(coordinates);
-
             canvas.translate(mPositionX, mPositionY);
             canvas.scale(mScaleFactor, mScaleFactor);
             canvas.drawBitmap(mBitmap, 0, 0, null);
-            canvas.drawPath(path, blue_paintbrush_stroke);
-            canvas.drawPath(path, blue_paintbrush_blur);
+            if (!path.isEmpty()) {
+
+                canvas.drawPath(path, blue_paintbrush_stroke);
+                canvas.drawPath(path, blue_paintbrush_blur);
+
+            }
             canvas.restore();
+
         }
     }
 
-    public void loadImageOnCanvas(Uri map) {
+    public void loadImageOnCanvas(int floorNum) {
+
+        Uri uriMap = null;
+
+        if (floorNum == 0) {
+            uriMap = uriFloor1;
+        }
+        else if (floorNum == 1) {
+            uriMap = uriFloor2;
+        }
+        else if (floorNum == 2) {
+            uriMap = uriFloor3;
+        }
 
         Bitmap bitmap = null;
         try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), map);
+            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uriMap);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
 
         float aspectRatio = (float) bitmap.getHeight()/(float) bitmap.getWidth();
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         //control how zoomed in map is on startup
         mImageWidth = (int) (displayMetrics.widthPixels + (displayMetrics.widthPixels*0.4));
         mImageHeight = Math.round(mImageWidth * aspectRatio);
         mBitmap = bitmap.createScaledBitmap(bitmap, mImageWidth, mImageHeight, false);
         invalidate();
-        //requestLayout();
 
     }
 
@@ -219,7 +244,7 @@ public class PinchZoomPan extends View {
         }
     }
 
-    private void makePath(float[] coordinates){
+    public void makePath(float[] coordinates){
 
         path.moveTo(coordinates[0], coordinates[1]);
 
@@ -229,6 +254,14 @@ public class PinchZoomPan extends View {
             path.moveTo(coordinates[i], coordinates[i+1]);
 
         }
+
+    }
+
+    public void popCoordinates(float[] coordinates) {
+
+        //conversion of Arc GIS coordinates to bitmap coordinates
+
+        mCoordinates = coordinates;
 
     }
 
