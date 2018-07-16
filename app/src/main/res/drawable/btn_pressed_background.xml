@@ -4,7 +4,7 @@
         android:radius="100dp"
         />
     <solid
-        android:color="@color/colorGreen"
+        android:color="@color/colorBtnPressed"
         />
     <size
         android:width="50dp"

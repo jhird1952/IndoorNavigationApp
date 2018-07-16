@@ -1,9 +1,7 @@
 package com.example.jake1.designproject;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,14 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +39,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView ivUTD;
     PopupMenu pumFrom;
     PopupMenu pumTo;
-
+    float[] noCoords;
+    float[] coords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         clNavBar = findViewById(R.id.clNavBar);
         pinchZoomPan = findViewById(R.id.pinchZoomPan);
+        //these arrays will be replaced with array from ArcGIS
+        noCoords = null;
+        coords = new float[] {0, 0, 0, 0, 600, 450, 0, 600, 600, 1, 600, 600, 1, 800, 600, 1, 800, 450, 1, 1000, 450, 2, 1000, 450, 2, 1000, 800, 2, 1500, 800, 2, 1500, 2250};
         etFrom = findViewById(R.id.etFrom);
         etTo = findViewById(R.id.etTo);
         tvTo = findViewById(R.id.tvTo);
@@ -71,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         pumTo = new PopupMenu(this, etTo);
 
         setSupportActionBar(toolbar);
-        loadImage(pinchZoomPan, 0);
+        pinchZoomPan.loadImageOnCanvas(0);
         loadPrefs();
 
         pumFrom.getMenuInflater().inflate( R.menu.start_location_menu, pumFrom.getMenu());
@@ -137,7 +136,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor1();
-                loadImage(pinchZoomPan, 0);
+                pinchZoomPan.setFloorPath(0);
+                pinchZoomPan.loadImageOnCanvas(0);
             }
         });
 
@@ -145,7 +145,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor2();
-                loadImage(pinchZoomPan, 1);
+                pinchZoomPan.setFloorPath(1);
+                pinchZoomPan.loadImageOnCanvas(1);
             }
         });
 
@@ -153,7 +154,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor3();
-                loadImage(pinchZoomPan, 2);
+                pinchZoomPan.setFloorPath(2);
+                pinchZoomPan.loadImageOnCanvas(2);
             }
         });
 
@@ -177,6 +179,8 @@ public class MainActivity extends AppCompatActivity {
                 imBtnBackArrow.setVisibility(View.VISIBLE);
                 btnStartNav.setVisibility(View.VISIBLE);
 
+                pinchZoomPan.popCoordinates(coords);
+
             }
         });
 
@@ -199,6 +203,8 @@ public class MainActivity extends AppCompatActivity {
                 ivUTD.setVisibility(View.VISIBLE);
                 btnStartNav.setVisibility(View.GONE);
 
+                pinchZoomPan.popCoordinates(noCoords);
+
             }
         });
 
@@ -216,24 +222,6 @@ public class MainActivity extends AppCompatActivity {
 
         Toast.makeText(this, "Menu selected", Toast.LENGTH_SHORT).show();
         return true;
-
-    }
-
-    private void loadImage(PinchZoomPan pinchZoomPan, int floorNum) {
-
-        Uri mapUri = null;
-
-        if (floorNum == 0) {
-            mapUri = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape");
-        }
-        else if (floorNum == 1) {
-            mapUri = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape2");
-        }
-        else if (floorNum == 2) {
-            mapUri = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape3");
-        }
-
-        pinchZoomPan.loadImageOnCanvas(mapUri);
 
     }
 
