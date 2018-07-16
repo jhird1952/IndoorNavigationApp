@@ -15,19 +15,24 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class PinchZoomPan extends View {
 
-    Paint blue_paintbrush_stroke;
-    Paint blue_paintbrush_blur;
-    Path path;
+    private Paint blue_paintbrush_stroke;
+    private Paint blue_paintbrush_blur;
+    private Path path;
 
-    float[] mCoordinates;
-    int mFloor;
-    Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape");;
-    Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape2");;
-    Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape3");;
+    private float[] mCoordinates;
+    private float[] mFloor1;
+    private float[] mFloor2;
+    private float[] mFloor3;
+    private int mFloorPath;
+
+    private Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape");;
+    private Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape2");;
+    private Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape3");;
 
     private Bitmap mBitmap;
     private int mImageWidth;
@@ -145,7 +150,15 @@ public class PinchZoomPan extends View {
 
         if (mCoordinates != null) {
 
-            makePath(mCoordinates);
+            if (mFloorPath == 0) {
+                makePath(mFloor1);
+            }
+            else if (mFloorPath == 1) {
+                makePath(mFloor2);
+            }
+            else if (mFloorPath == 2) {
+                makePath(mFloor3);
+            }
 
         }
 
@@ -244,7 +257,7 @@ public class PinchZoomPan extends View {
         }
     }
 
-    public void makePath(float[] coordinates){
+    public void makePath( float[] coordinates){
 
         path.moveTo(coordinates[0], coordinates[1]);
 
@@ -259,9 +272,70 @@ public class PinchZoomPan extends View {
 
     public void popCoordinates(float[] coordinates) {
 
-        //conversion of Arc GIS coordinates to bitmap coordinates
+        //might need to do a conversion of Arc GIS coordinates to bitmap coordinates here
 
         mCoordinates = coordinates;
+
+        if (mCoordinates != null) {
+
+            int count1 = 0;
+            int count2 = 0;
+            int count3 = 0;
+
+            for (int i = 0; i < mCoordinates.length; i += 3) {
+
+                if (mCoordinates[i] == 0) {
+                    count1++;
+                }
+                else if (mCoordinates[i] == 1) {
+                    count2++;
+                }
+                else if (mCoordinates[i] == 2) {
+                    count3++;
+                }
+
+            }
+
+            float [] floor1 = new float[count1 * 2];
+            float [] floor2 = new float[count2 * 2];
+            float [] floor3 = new float[count3 * 2];
+            int placeHolder1 = 0;
+            int placeHolder2 = 0;
+            int placeHolder3 = 0;
+
+            for (int i = 0; i < mCoordinates.length; i += 3) {
+
+                if (mCoordinates[i] == 0) {
+                    floor1[placeHolder1] = mCoordinates[i + 1];
+                    floor1[placeHolder1 + 1] = mCoordinates[i + 2];
+                    placeHolder1 += 2;
+                }
+                else if (mCoordinates[i] == 1) {
+                    floor2[placeHolder2] = mCoordinates[i + 1];
+                    floor2[placeHolder2 + 1] = mCoordinates[i + 2];
+                    placeHolder2 += 2;
+                }
+                else if (mCoordinates[i] == 2) {
+                    floor3[placeHolder3] = mCoordinates[i + 1];
+                    floor3[placeHolder3 + 1] = mCoordinates[i + 2];
+                    placeHolder3 += 2;
+                }
+
+            }
+
+            mFloor1 = floor1;
+            mFloor2 = floor2;
+            mFloor3 = floor3;
+
+            invalidate();
+
+        }
+
+    }
+
+    public void setFloorPath(int floorPath) {
+
+        mFloorPath = floorPath;
 
     }
 

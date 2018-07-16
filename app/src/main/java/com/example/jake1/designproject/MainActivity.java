@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         pinchZoomPan = findViewById(R.id.pinchZoomPan);
         //these arrays will be replaced with array from ArcGIS
         noCoords = null;
-        coords = new float[] {0, 0, 600, 450, 600, 600, 800, 600, 800, 450, 1000, 450, 1000, 800, 1500, 800, 1500, 2250};
+        coords = new float[] {0, 0, 0, 0, 600, 450, 0, 600, 600, 1, 600, 600, 1, 800, 600, 1, 800, 450, 1, 1000, 450, 2, 1000, 450, 2, 1000, 800, 2, 1500, 800, 2, 1500, 2250};
         etFrom = findViewById(R.id.etFrom);
         etTo = findViewById(R.id.etTo);
         tvTo = findViewById(R.id.tvTo);
@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor1();
+                pinchZoomPan.setFloorPath(0);
                 pinchZoomPan.loadImageOnCanvas(0);
             }
         });
@@ -144,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor2();
+                pinchZoomPan.setFloorPath(1);
                 pinchZoomPan.loadImageOnCanvas(1);
             }
         });
@@ -152,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectFloor3();
+                pinchZoomPan.setFloorPath(2);
                 pinchZoomPan.loadImageOnCanvas(2);
             }
         });
@@ -177,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
                 btnStartNav.setVisibility(View.VISIBLE);
 
                 pinchZoomPan.popCoordinates(coords);
-                pinchZoomPan.invalidate();
 
             }
         });
@@ -202,7 +204,6 @@ public class MainActivity extends AppCompatActivity {
                 btnStartNav.setVisibility(View.GONE);
 
                 pinchZoomPan.popCoordinates(noCoords);
-                pinchZoomPan.invalidate();
 
             }
         });
