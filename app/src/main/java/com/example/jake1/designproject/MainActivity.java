@@ -1,16 +1,21 @@
 package com.example.jake1.designproject;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,8 +26,8 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    protected PinchZoomPan pinchZoomPan;
     Toolbar toolbar;
+    protected PinchZoomPan pinchZoomPan;
     ConstraintLayout clNavBar;
     EditText etFrom;
     EditText etTo;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     PopupMenu pumTo;
     float[] noCoords;
     float[] coords;
+    boolean takeElevator;
+    boolean takeStairs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +57,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
         clNavBar = findViewById(R.id.clNavBar);
         pinchZoomPan = findViewById(R.id.pinchZoomPan);
-        //these arrays will be replaced with array from ArcGIS
-        noCoords = null;
-        coords = new float[] {0, 0, 0, 0, 600, 450, 0, 600, 600, 1, 600, 600, 1, 800, 600, 1, 800, 450, 1, 1000, 450, 2, 1000, 450, 2, 1000, 800, 2, 1500, 800, 2, 1500, 2250};
         etFrom = findViewById(R.id.etFrom);
         etTo = findViewById(R.id.etTo);
         tvTo = findViewById(R.id.tvTo);
@@ -68,10 +72,14 @@ public class MainActivity extends AppCompatActivity {
         imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
         pumFrom = new PopupMenu(this, etFrom);
         pumTo = new PopupMenu(this, etTo);
+        //these arrays will be replaced with array from ArcGIS
+        noCoords = null;
+        coords = new float[] {0, 450, 950, 0, 510, 950, 0, 510, 1180, 0, 1900, 1180, 1, 1900, 1180, 1, 1200, 1180, 1, 1200, 180, 2, 1330, 180, 2, 1330, 230, 2, 1250, 230, 2, 1250, 1100, 2, 1170, 1250, 2, 1170, 1660, 2, 930, 1660, 2, 930, 1860};
 
         setSupportActionBar(toolbar);
         pinchZoomPan.loadImageOnCanvas(0);
         loadPrefs();
+        setPrefs();
 
         pumFrom.getMenuInflater().inflate( R.menu.start_location_menu, pumFrom.getMenu());
         pumTo.getMenuInflater().inflate( R.menu.destination_menu, pumTo.getMenu());
@@ -84,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
                         etFrom.setText(menuItem.toString());
+                        closeKeyboard();
                         return true;
 
                     }
@@ -100,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
                         etTo.setText(menuItem.toString());
+                        closeKeyboard();
                         return true;
 
                     }
@@ -112,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectStairs();
+                setPrefs();
                 savePrefs(1);
             }
         });
@@ -120,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectBoth();
+                setPrefs();
                 savePrefs(0);
             }
         });
@@ -128,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 selectElevator();
+                setPrefs();
                 savePrefs(2);
             }
         });
@@ -171,10 +184,6 @@ public class MainActivity extends AppCompatActivity {
                 etTo.setVisibility(View.GONE);
                 tvTo.setVisibility(View.GONE);
 
-                ViewGroup.LayoutParams params = clNavBar.getLayoutParams();
-                params.height = 168;
-                clNavBar.setLayoutParams(params);
-
                 ivUTD.setVisibility(View.GONE);
                 imBtnBackArrow.setVisibility(View.VISIBLE);
                 btnStartNav.setVisibility(View.VISIBLE);
@@ -195,9 +204,6 @@ public class MainActivity extends AppCompatActivity {
                 etFrom.setVisibility(View.VISIBLE);
                 etTo.setVisibility(View.VISIBLE);
                 tvTo.setVisibility(View.VISIBLE);
-
-                ViewGroup.LayoutParams params = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.FILL_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-                clNavBar.setLayoutParams(params);
 
                 imBtnBackArrow.setVisibility(View.GONE);
                 ivUTD.setVisibility(View.VISIBLE);
@@ -332,6 +338,31 @@ public class MainActivity extends AppCompatActivity {
         else {
             selectBoth();
         }
+
+    }
+
+    private void setPrefs() {
+
+        if (!btnStairs.isEnabled()) {
+            takeStairs = true;
+            takeElevator = false;
+        }
+        else if (!btnElevator.isEnabled()) {
+            takeStairs = false;
+            takeElevator = true;
+        }
+        else {
+            takeStairs = true;
+            takeElevator = true;
+        }
+
+    }
+
+    private void closeKeyboard() {
+
+        View view = this.getCurrentFocus();
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
     }
 

@@ -30,9 +30,9 @@ public class PinchZoomPan extends View {
     private float[] mFloor3;
     private int mFloorPath;
 
-    private Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape");;
-    private Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape2");;
-    private Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape3");;
+    private Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/map");;
+    private Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/map2");;
+    private Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/map3");;
 
     private Bitmap mBitmap;
     private int mImageWidth;
@@ -150,13 +150,13 @@ public class PinchZoomPan extends View {
 
         if (mCoordinates != null) {
 
-            if (mFloorPath == 0) {
+            if (mFloorPath == 0 && mFloor1 != null) {
                 makePath(mFloor1);
             }
-            else if (mFloorPath == 1) {
+            else if (mFloorPath == 1 && mFloor2 != null) {
                 makePath(mFloor2);
             }
-            else if (mFloorPath == 2) {
+            else if (mFloorPath == 2 && mFloor3 != null) {
                 makePath(mFloor3);
             }
 
@@ -235,7 +235,7 @@ public class PinchZoomPan extends View {
         float aspectRatio = (float) bitmap.getHeight()/(float) bitmap.getWidth();
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         //control how zoomed in map is on startup
-        mImageWidth = (int) (displayMetrics.widthPixels + (displayMetrics.widthPixels*0.4));
+        mImageWidth = (int) (displayMetrics.widthPixels + (displayMetrics.widthPixels*0.9));
         mImageHeight = Math.round(mImageWidth * aspectRatio);
         mBitmap = bitmap.createScaledBitmap(bitmap, mImageWidth, mImageHeight, false);
         invalidate();
@@ -276,11 +276,14 @@ public class PinchZoomPan extends View {
 
         mCoordinates = coordinates;
 
-        if (mCoordinates != null) {
+        if (mCoordinates != null && mCoordinates.length % 3 == 0) {
 
             int count1 = 0;
             int count2 = 0;
             int count3 = 0;
+            float[] floor1 = null;
+            float[] floor2 = null;
+            float[] floor3 = null;
 
             for (int i = 0; i < mCoordinates.length; i += 3) {
 
@@ -296,9 +299,16 @@ public class PinchZoomPan extends View {
 
             }
 
-            float [] floor1 = new float[count1 * 2];
-            float [] floor2 = new float[count2 * 2];
-            float [] floor3 = new float[count3 * 2];
+            if (count1 != 0) {
+                floor1 = new float[count1 * 2];
+            }
+            if (count2 != 0) {
+                floor2 = new float[count2 * 2];
+            }
+            if (count3 != 0) {
+                floor3 = new float[count3 * 2];
+            }
+
             int placeHolder1 = 0;
             int placeHolder2 = 0;
             int placeHolder3 = 0;
