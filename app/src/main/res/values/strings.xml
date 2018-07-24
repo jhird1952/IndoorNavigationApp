@@ -1,10 +1,8 @@
 <resources>
-    <string name="app_name">Green Hall Navigation</string>
+    <string name="app_name">Constellation</string>
     <string name="start_location_hint">Starting Location</string>
     <string name="destination_hint">Destination</string>
     <string name="menu_icon">Menu</string>
-    <string name="menu_item_1">Sub Item 1</string>
-    <string name="menu_item_2">Sub Item 2</string>
     <string name="first_floor">Floor 1</string>
     <string name="second_floor">Floor 2</string>
     <string name="third_floor">Floor 3</string>
@@ -16,4 +14,5 @@
     <string name="btn_elevator">Elevator</string>
     <string name="tv_to">to</string>
     <string name="btn_start_nav">Start</string>
+    <string name="user_location">Your Location</string>
 </resources>

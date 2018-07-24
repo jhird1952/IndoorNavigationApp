@@ -1,21 +1,15 @@
 package com.example.jake1.designproject;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
-import android.net.wifi.WifiManager;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -48,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     float[] coords;
     boolean takeElevator;
     boolean takeStairs;
+    String from;
+    String to;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         pinchZoomPan.loadImageOnCanvas(0);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM, WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         loadPrefs();
         setPrefs();
 
@@ -92,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
                         etFrom.setText(menuItem.toString());
-                        closeKeyboard();
                         return true;
 
                     }
@@ -109,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
                         etTo.setText(menuItem.toString());
-                        closeKeyboard();
                         return true;
 
                     }
@@ -188,7 +183,15 @@ public class MainActivity extends AppCompatActivity {
                 imBtnBackArrow.setVisibility(View.VISIBLE);
                 btnStartNav.setVisibility(View.VISIBLE);
 
-                pinchZoomPan.popCoordinates(coords);
+                if (etFrom.getText().toString().equals("Your Location")) {
+                    from = "CMX";
+                }
+                else {
+                    from = etFrom.getText().toString();
+                }
+                to = etTo.getText().toString();
+
+                queryServer(takeStairs, takeElevator, from, to);
 
             }
         });
@@ -358,11 +361,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void closeKeyboard() {
+    private void queryServer(boolean takeStairs, boolean takeElevator, String from, String to) {
 
-        View view = this.getCurrentFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        pinchZoomPan.popCoordinates(coords);
 
     }
 
