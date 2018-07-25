@@ -1,5 +1,6 @@
 package com.example.jake1.designproject;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -40,10 +41,6 @@ public class MainActivity extends AppCompatActivity {
     PopupMenu pumTo;
     float[] noCoords;
     float[] coords;
-    boolean takeElevator;
-    boolean takeStairs;
-    String from;
-    String to;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                Communicator communicator = new Communicator();
+
                 btnNavigate.setVisibility(View.GONE);
                 btnStairs.setVisibility(View.GONE);
                 btnBoth.setVisibility(View.GONE);
@@ -184,14 +183,16 @@ public class MainActivity extends AppCompatActivity {
                 btnStartNav.setVisibility(View.VISIBLE);
 
                 if (etFrom.getText().toString().equals("Your Location")) {
-                    from = "CMX";
+                    communicator.setFromLocation("CMX");
                 }
                 else {
-                    from = etFrom.getText().toString();
+                    communicator.setFromLocation(etFrom.getText().toString());
                 }
-                to = etTo.getText().toString();
+                communicator.setToLocation(etTo.getText().toString());
 
-                queryServer(takeStairs, takeElevator, from, to);
+                //once communicator is connected to server, uncomment this
+                //coords = communicator.queryServer();
+                pinchZoomPan.popCoordinates(coords);
 
             }
         });
@@ -229,7 +230,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        Toast.makeText(this, "Menu selected", Toast.LENGTH_SHORT).show();
+        Intent startQuickNavActivity = new Intent(getApplicationContext(), QuickNavMenuActivity.class);
+        startActivity(startQuickNavActivity);
+
         return true;
 
     }
@@ -346,24 +349,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void setPrefs() {
 
+        Communicator communicator = new Communicator();
+
         if (!btnStairs.isEnabled()) {
-            takeStairs = true;
-            takeElevator = false;
+            communicator.setTakeStairs(true);
+            communicator.setTakeElevator(false);
         }
         else if (!btnElevator.isEnabled()) {
-            takeStairs = false;
-            takeElevator = true;
+            communicator.setTakeStairs(false);
+            communicator.setTakeElevator(true);
         }
         else {
-            takeStairs = true;
-            takeElevator = true;
+            communicator.setTakeStairs(true);
+            communicator.setTakeElevator(true);
         }
-
-    }
-
-    private void queryServer(boolean takeStairs, boolean takeElevator, String from, String to) {
-
-        pinchZoomPan.popCoordinates(coords);
 
     }
 

@@ -28,9 +28,9 @@ public class PinchZoomPan extends View {
     private float[] mFloor3;
     private int mFloorPath;
 
-    private Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/map");
-    private Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/map2");
-    private Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/map3");
+    private Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr2");
+    private Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr3");
+    private Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr4");
 
     private Bitmap mBitmap;
     private int mImageWidth;
