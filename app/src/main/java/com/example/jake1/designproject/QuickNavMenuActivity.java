@@ -22,7 +22,7 @@ public class QuickNavMenuActivity extends AppCompatActivity {
     Button btnEntertainment;
     ImageButton imBtnBackArrow;
     ImageView ivUTD;
-    float[] coords;
+    float[] coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class QuickNavMenuActivity extends AppCompatActivity {
         btnEntertainment = findViewById(R.id.btnEntertainment);
         ivUTD = findViewById(R.id.ivUTD);
         imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
+        coordinates = new float[] {0, 510, 850, 0, 580, 850, 0, 580, 1040, 0, 1760, 1040};
 
         setSupportActionBar(toolbar);
         ivUTD.setVisibility(View.GONE);
@@ -61,7 +62,8 @@ public class QuickNavMenuActivity extends AppCompatActivity {
 
                 communicator.setFromLocation("CMX");
                 communicator.setToLocation("Bathroom");
-                coords = communicator.queryServer();
+                //coordinates = communicator.queryServer();
+                displayQuickNavPath();
 
             }
         });
@@ -72,7 +74,8 @@ public class QuickNavMenuActivity extends AppCompatActivity {
 
                 communicator.setFromLocation("CMX");
                 communicator.setToLocation("Storm Shelter");
-                coords = communicator.queryServer();
+                //coordinates = communicator.queryServer();
+                displayQuickNavPath();
 
             }
         });
@@ -83,7 +86,8 @@ public class QuickNavMenuActivity extends AppCompatActivity {
 
                 communicator.setFromLocation("CMX");
                 communicator.setToLocation("Water Fountain");
-                coords = communicator.queryServer();
+                //coordinates = communicator.queryServer();
+                displayQuickNavPath();
 
             }
         });
@@ -94,7 +98,8 @@ public class QuickNavMenuActivity extends AppCompatActivity {
 
                 communicator.setFromLocation("CMX");
                 communicator.setToLocation("Food");
-                coords = communicator.queryServer();
+                coordinates = communicator.queryServer();
+                displayQuickNavPath();
 
             }
         });
@@ -105,10 +110,20 @@ public class QuickNavMenuActivity extends AppCompatActivity {
 
                 communicator.setFromLocation("CMX");
                 communicator.setToLocation("Entertainment");
-                coords = communicator.queryServer();
+                //coordinates = communicator.queryServer();
+                displayQuickNavPath();
 
             }
         });
 
     }
+
+    private void displayQuickNavPath() {
+
+        Intent startMainActivityWithPath = new Intent(getApplicationContext(), MainActivity.class);
+        startMainActivityWithPath.putExtra("coordinateArray", coordinates);
+        startActivity(startMainActivityWithPath);
+
+    }
+
 }

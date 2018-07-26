@@ -17,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
     ImageView ivUTD;
     PopupMenu pumFrom;
     PopupMenu pumTo;
-    float[] noCoords;
-    float[] coords;
+    Communicator communicator = new Communicator();
+    float[] coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,9 +64,6 @@ public class MainActivity extends AppCompatActivity {
         imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
         pumFrom = new PopupMenu(this, etFrom);
         pumTo = new PopupMenu(this, etTo);
-        //these arrays will be replaced with array from ArcGIS
-        noCoords = null;
-        coords = new float[] {0, 450, 950, 0, 510, 950, 0, 510, 1180, 0, 1900, 1180, 1, 1900, 1180, 1, 1200, 1180, 1, 1200, 180, 2, 1330, 180, 2, 1330, 230, 2, 1250, 230, 2, 1250, 1100, 2, 1170, 1250, 2, 1170, 1660, 2, 930, 1660, 2, 930, 1860};
 
         setSupportActionBar(toolbar);
         pinchZoomPan.loadImageOnCanvas(0);
@@ -77,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
 
         pumFrom.getMenuInflater().inflate( R.menu.start_location_menu, pumFrom.getMenu());
         pumTo.getMenuInflater().inflate( R.menu.destination_menu, pumTo.getMenu());
+
+        if (getIntent().hasExtra("coordinateArray")) {
+
+            coordinates = getIntent().getExtras().getFloatArray("coordinateArray");
+            displayPath();
+
+        }
 
         etFrom.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,20 +171,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Communicator communicator = new Communicator();
-
-                btnNavigate.setVisibility(View.GONE);
-                btnStairs.setVisibility(View.GONE);
-                btnBoth.setVisibility(View.GONE);
-                btnElevator.setVisibility(View.GONE);
-                etFrom.setVisibility(View.GONE);
-                etTo.setVisibility(View.GONE);
-                tvTo.setVisibility(View.GONE);
-
-                ivUTD.setVisibility(View.GONE);
-                imBtnBackArrow.setVisibility(View.VISIBLE);
-                btnStartNav.setVisibility(View.VISIBLE);
-
                 if (etFrom.getText().toString().equals("Your Location")) {
                     communicator.setFromLocation("CMX");
                 }
@@ -191,8 +180,10 @@ public class MainActivity extends AppCompatActivity {
                 communicator.setToLocation(etTo.getText().toString());
 
                 //once communicator is connected to server, uncomment this
-                //coords = communicator.queryServer();
-                pinchZoomPan.popCoordinates(coords);
+                //coordinates = communicator.queryServer();
+                coordinates = new float[] {0, 510, 850, 0, 580, 850, 0, 580, 1040, 0, 1760, 1040, 1, 1760, 1040, 1, 1170, 1040, 1, 1170, 120, 2, 1250, 100, 2, 1250, 215, 2, 1180, 215, 2, 1180, 1020, 2, 1100, 1150, 2, 1100, 1560, 2, 880, 1560, 2, 880, 1730};
+
+                displayPath();
 
             }
         });
@@ -213,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
                 ivUTD.setVisibility(View.VISIBLE);
                 btnStartNav.setVisibility(View.GONE);
 
-                pinchZoomPan.popCoordinates(noCoords);
+                pinchZoomPan.popCoordinates(null);
 
             }
         });
@@ -349,8 +340,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setPrefs() {
 
-        Communicator communicator = new Communicator();
-
         if (!btnStairs.isEnabled()) {
             communicator.setTakeStairs(true);
             communicator.setTakeElevator(false);
@@ -363,6 +352,24 @@ public class MainActivity extends AppCompatActivity {
             communicator.setTakeStairs(true);
             communicator.setTakeElevator(true);
         }
+
+    }
+
+    public void displayPath() {
+
+        btnNavigate.setVisibility(View.GONE);
+        btnStairs.setVisibility(View.GONE);
+        btnBoth.setVisibility(View.GONE);
+        btnElevator.setVisibility(View.GONE);
+        etFrom.setVisibility(View.GONE);
+        etTo.setVisibility(View.GONE);
+        tvTo.setVisibility(View.GONE);
+
+        ivUTD.setVisibility(View.GONE);
+        imBtnBackArrow.setVisibility(View.VISIBLE);
+        btnStartNav.setVisibility(View.VISIBLE);
+
+        pinchZoomPan.popCoordinates(coordinates);
 
     }
 

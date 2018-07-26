@@ -19,7 +19,9 @@ import java.io.IOException;
 public class PinchZoomPan extends View {
 
     private Paint blue_paintbrush_stroke;
-    private Paint blue_paintbrush_blur;
+    private Paint blue_paintbrush_blur_stroke;
+    private Paint blue_paintbrush_fill;
+    private Paint blue_paintbrush_blur_fill;
     private Path path;
 
     private float[] mCoordinates;
@@ -166,12 +168,19 @@ public class PinchZoomPan extends View {
         blue_paintbrush_stroke.setStrokeCap(Paint.Cap.ROUND);
         blue_paintbrush_stroke.setStrokeWidth(20);
 
-        blue_paintbrush_blur = new Paint();
-        blue_paintbrush_blur.setColor(getResources().getColor(R.color.colorPathBlur));
-        blue_paintbrush_blur.setStyle(Paint.Style.STROKE);
-        blue_paintbrush_blur.setStrokeCap(Paint.Cap.ROUND);
-        blue_paintbrush_blur.setStrokeWidth(35);
-        blue_paintbrush_blur.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));
+        blue_paintbrush_blur_stroke = new Paint();
+        blue_paintbrush_blur_stroke.setColor(getResources().getColor(R.color.colorPathBlur));
+        blue_paintbrush_blur_stroke.setStyle(Paint.Style.STROKE);
+        blue_paintbrush_blur_stroke.setStrokeCap(Paint.Cap.ROUND);
+        blue_paintbrush_blur_stroke.setStrokeWidth(35);
+
+        blue_paintbrush_fill = new Paint();
+        blue_paintbrush_fill.setColor(getResources().getColor(R.color.colorPath));
+        blue_paintbrush_fill.setStyle(Paint.Style.FILL);
+
+        blue_paintbrush_blur_fill = new Paint();
+        blue_paintbrush_blur_fill.setColor(getResources().getColor(R.color.colorPathBlur));
+        blue_paintbrush_blur_fill.setStyle(Paint.Style.FILL);
 
         if (mBitmap != null) {
             canvas.save();
@@ -199,8 +208,10 @@ public class PinchZoomPan extends View {
             canvas.drawBitmap(mBitmap, 0, 0, null);
             if (!path.isEmpty()) {
 
+                canvas.drawCircle(mCoordinates[1], mCoordinates[2], 30, blue_paintbrush_fill);
+                canvas.drawCircle(mCoordinates[1], mCoordinates[2], 40, blue_paintbrush_blur_fill);
                 canvas.drawPath(path, blue_paintbrush_stroke);
-                canvas.drawPath(path, blue_paintbrush_blur);
+                canvas.drawPath(path, blue_paintbrush_blur_stroke);
 
             }
             canvas.restore();
