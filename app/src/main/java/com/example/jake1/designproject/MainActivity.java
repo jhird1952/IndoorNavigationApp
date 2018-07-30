@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     PopupMenu pumFrom;
     PopupMenu pumTo;
     Communicator communicator = new Communicator();
-    float[] coordinates;
+    double[] coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +69,13 @@ public class MainActivity extends AppCompatActivity {
         pinchZoomPan.loadImageOnCanvas(0);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM, WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         loadPrefs();
-        setPrefs();
 
         pumFrom.getMenuInflater().inflate( R.menu.start_location_menu, pumFrom.getMenu());
         pumTo.getMenuInflater().inflate( R.menu.destination_menu, pumTo.getMenu());
 
         if (getIntent().hasExtra("coordinateArray")) {
 
-            coordinates = getIntent().getExtras().getFloatArray("coordinateArray");
+            coordinates = getIntent().getExtras().getDoubleArray("coordinateArray");
             displayPath();
 
         }
@@ -179,10 +178,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 communicator.setToLocation(etTo.getText().toString());
 
-                //once communicator is connected to server, uncomment this
+                //once communicator is connected to server, uncomment next line and delete line after that
                 //coordinates = communicator.queryServer();
-                coordinates = new float[] {0, 510, 850, 0, 580, 850, 0, 580, 1040, 0, 1760, 1040, 1, 1760, 1040, 1, 1170, 1040, 1, 1170, 120, 2, 1250, 100, 2, 1250, 215, 2, 1180, 215, 2, 1180, 1020, 2, 1100, 1150, 2, 1100, 1560, 2, 880, 1560, 2, 880, 1730};
-
+                coordinates = new double[] {};
                 displayPath();
 
             }

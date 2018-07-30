@@ -7,7 +7,7 @@ public class Communicator {
     private String fromLocation;
     private String toLocation;
 
-    public Communicator(){
+    Communicator(){
 
     }
 
