@@ -25,4 +25,8 @@
     <string name="btn_food">Food</string>
     <string name="btn_entertainment">Entertainment</string>
 
+    //Navigation Activity strings
+    <string name="final_destination">Display Final Destination</string>
+    <string name="direction">Direction</string>
+
 </resources>
