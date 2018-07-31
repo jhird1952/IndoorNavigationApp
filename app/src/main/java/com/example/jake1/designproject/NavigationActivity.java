@@ -1,7 +1,6 @@
 package com.example.jake1.designproject;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -10,10 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,48 +29,59 @@ import java.lang.Math;
 
 public class NavigationActivity extends AppCompatActivity {
 
-    NavView navView;
-    Communicator communicator;
-    Toolbar toolbar;
-    ConstraintLayout clNavMap;
-    TextView tvToolbarTitle;
+    private Communicator communicator;
+    private CountDownTimer locationTimer;
+    private ConstraintLayout clNavMap;
+    private NavView navView;
     private static TextView directionText;
-    private static CountDownTimer locationTimer;
-    ImageButton imBtnBackArrow;
-    ImageView ivUTD;
-    //private static ImageView mapView;
     private static ImageView arrowImage;
-    private static ImageView locationDot;
-    String finalDestination;
+    private ImageView locationDot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
-        toolbar = findViewById(R.id.toolbar);
-        navView = findViewById(R.id.navView);
+        communicator = new Communicator();
+        ViewTreeObserver vto = clNavMap.getViewTreeObserver();
+        Toolbar toolbar = findViewById(R.id.toolbar);
         clNavMap = findViewById(R.id.clNavMap);
-        tvToolbarTitle = findViewById(R.id.tvToolbarTitle);
+        navView = findViewById(R.id.navView);
+        TextView tvToolbarTitle = findViewById(R.id.tvToolbarTitle);
         directionText = findViewById(R.id.tvDirections);
+        ImageButton imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
+        ImageView ivUTD = findViewById(R.id.ivUTD);
         arrowImage = findViewById(R.id.ivDirectionArrow);
+        navView = findViewById(R.id.navView);
         locationDot = findViewById(R.id.ivLocationDot);
-        ivUTD = findViewById(R.id.ivUTD);
-        imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
 
         setSupportActionBar(toolbar);
         ivUTD.setVisibility(View.GONE);
         imBtnBackArrow.setVisibility(View.VISIBLE);
         tvToolbarTitle.setText(R.string.final_destination);
-        navView.loadMap();
         updateLocation();
 
-        //set-up the map image
-        //mapView = findViewById(R.id.mapView);
-        //mapView.setImageResource(R.drawable.gr2);
-
-        finalDestination = getIntent().getExtras().getString("finalDestination");
+        String finalDestination = getIntent().getExtras().getString("finalDestination");
         tvToolbarTitle.setText("Path to " + finalDestination);
+
+        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                    clNavMap.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                } else {
+                    clNavMap.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+                int width  = clNavMap.getMeasuredWidth();
+                int height = clNavMap.getMeasuredHeight();
+
+                navView.setImageWidth(width);
+                navView.setImageHeight(height);
+                navView.loadMap();
+
+            }
+        });
 
         imBtnBackArrow.setOnClickListener(new View.OnClickListener() {
             @Override

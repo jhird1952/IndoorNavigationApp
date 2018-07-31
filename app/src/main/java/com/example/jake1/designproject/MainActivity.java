@@ -2,11 +2,9 @@ package com.example.jake1.designproject;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,25 +35,25 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    Toolbar toolbar;
-    protected PinchZoomPan pinchZoomPan;
-    ConstraintLayout clNavBar;
-    EditText etFrom;
-    EditText etTo;
-    TextView tvTo;
-    Button btnFloor1;
-    Button btnFloor2;
-    Button btnFloor3;
-    Button btnNavigate;
-    Button btnStairs;
-    Button btnBoth;
-    Button btnElevator;
-    Button btnStartNav;
-    ImageButton imBtnBackArrow;
-    ImageView ivUTD;
-    PopupMenu pumFrom;
-    PopupMenu pumTo;
-    Communicator communicator = new Communicator();
+    private Communicator communicator;
+    private Toolbar toolbar;
+    private PinchZoomPan pinchZoomPan;
+    private EditText etFrom;
+    private EditText etTo;
+    private TextView tvTo;
+    private Button btnFloor1;
+    private Button btnFloor2;
+    private Button btnFloor3;
+    private Button btnNavigate;
+    private Button btnStairs;
+    private Button btnBoth;
+    private Button btnElevator;
+    private Button btnStartNav;
+    private ImageButton imBtnBackArrow;
+    private ImageView ivUTD;
+    private PopupMenu pumFrom;
+    private PopupMenu pumTo;
+
     //URL to the web-server, change it to your web-server's URL
     private String serverURL = "http://ecsclark18.utdallas.edu/";
     //a variable to hold the parsed path data from ArcGIS
@@ -67,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        communicator = new Communicator();
         toolbar = findViewById(R.id.toolbar);
-        clNavBar = findViewById(R.id.clNavBar);
         pinchZoomPan = findViewById(R.id.pinchZoomPan);
         etFrom = findViewById(R.id.etFrom);
         etTo = findViewById(R.id.etTo);

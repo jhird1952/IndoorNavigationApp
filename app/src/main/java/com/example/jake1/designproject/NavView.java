@@ -10,6 +10,7 @@ import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.io.IOException;
 
@@ -21,6 +22,8 @@ public class NavView extends View {
     private float mScaleFactor = 1.0f;
 
     private Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr2");
+    private Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr3");
+    private Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr4");
 
     public NavView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -41,13 +44,16 @@ public class NavView extends View {
 
     public void loadMap() {
 
+        Uri uriMap = uriFloor1;
+
         Bitmap bitmap = null;
         try {
-            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uriFloor1);
+            bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), uriMap);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
+
 
         mBitmap = bitmap.createScaledBitmap(bitmap, mImageWidth, mImageHeight, false);
         invalidate();
