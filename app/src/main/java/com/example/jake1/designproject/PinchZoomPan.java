@@ -2,7 +2,6 @@ package com.example.jake1.designproject;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -14,25 +13,26 @@ import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class PinchZoomPan extends View {
 
     private Paint blue_paintbrush_stroke;
-    private Paint blue_paintbrush_blur;
+    private Paint blue_paintbrush_blur_stroke;
+    private Paint blue_paintbrush_fill;
+    private Paint blue_paintbrush_blur_fill;
     private Path path;
 
-    private float[] mCoordinates;
-    private float[] mFloor1;
-    private float[] mFloor2;
-    private float[] mFloor3;
+    private double[] mCoordinates;
+    private double[] mFloor1;
+    private double[] mFloor2;
+    private double[] mFloor3;
     private int mFloorPath;
+    private int mStartingFloor;
 
-    private Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape");;
-    private Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape2");;
-    private Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/landscape3");;
+    private Uri uriFloor1 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr2");
+    private Uri uriFloor2 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr3");
+    private Uri uriFloor3 = Uri.parse("android.resource://com.example.jake1.designproject/drawable/gr4");
 
     private Bitmap mBitmap;
     private int mImageWidth;
@@ -150,30 +150,17 @@ public class PinchZoomPan extends View {
 
         if (mCoordinates != null) {
 
-            if (mFloorPath == 0) {
+            if (mFloorPath == 0 && mFloor1 != null) {
                 makePath(mFloor1);
             }
-            else if (mFloorPath == 1) {
+            else if (mFloorPath == 1 && mFloor2 != null) {
                 makePath(mFloor2);
             }
-            else if (mFloorPath == 2) {
+            else if (mFloorPath == 2 && mFloor3 != null) {
                 makePath(mFloor3);
             }
 
         }
-
-        blue_paintbrush_stroke = new Paint();
-        blue_paintbrush_stroke.setColor(getResources().getColor(R.color.colorPath));
-        blue_paintbrush_stroke.setStyle(Paint.Style.STROKE);
-        blue_paintbrush_stroke.setStrokeCap(Paint.Cap.ROUND);
-        blue_paintbrush_stroke.setStrokeWidth(20);
-
-        blue_paintbrush_blur = new Paint();
-        blue_paintbrush_blur.setColor(getResources().getColor(R.color.colorPathBlur));
-        blue_paintbrush_blur.setStyle(Paint.Style.STROKE);
-        blue_paintbrush_blur.setStrokeCap(Paint.Cap.ROUND);
-        blue_paintbrush_blur.setStrokeWidth(35);
-        blue_paintbrush_blur.setMaskFilter(new BlurMaskFilter(15, BlurMaskFilter.Blur.NORMAL));
 
         if (mBitmap != null) {
             canvas.save();
@@ -201,8 +188,53 @@ public class PinchZoomPan extends View {
             canvas.drawBitmap(mBitmap, 0, 0, null);
             if (!path.isEmpty()) {
 
+                blue_paintbrush_stroke = new Paint();
+                blue_paintbrush_stroke.setColor(getResources().getColor(R.color.colorPath));
+                blue_paintbrush_stroke.setStyle(Paint.Style.STROKE);
+                blue_paintbrush_stroke.setStrokeCap(Paint.Cap.ROUND);
+                blue_paintbrush_stroke.setStrokeWidth(20);
+
+                blue_paintbrush_blur_stroke = new Paint();
+                blue_paintbrush_blur_stroke.setColor(getResources().getColor(R.color.colorPathBlur));
+                blue_paintbrush_blur_stroke.setStyle(Paint.Style.STROKE);
+                blue_paintbrush_blur_stroke.setStrokeCap(Paint.Cap.ROUND);
+                blue_paintbrush_blur_stroke.setStrokeWidth(35);
+
+                blue_paintbrush_fill = new Paint();
+                blue_paintbrush_fill.setColor(getResources().getColor(R.color.colorPath));
+                blue_paintbrush_fill.setStyle(Paint.Style.FILL);
+
+                blue_paintbrush_blur_fill = new Paint();
+                blue_paintbrush_blur_fill.setColor(getResources().getColor(R.color.colorPathBlur));
+                blue_paintbrush_blur_fill.setStyle(Paint.Style.FILL);
+
+                if (mStartingFloor == 0) {
+
+                    if (mFloorPath == 0) {
+                        canvas.drawCircle((float) mFloor1[0], (float) mFloor1[1], 30, blue_paintbrush_fill);
+                        canvas.drawCircle((float) mFloor1[0], (float) mFloor1[1], 40, blue_paintbrush_blur_fill);
+                    }
+
+                }
+                else if (mStartingFloor == 1) {
+
+                    if (mFloorPath == 1) {
+                        canvas.drawCircle((float) mFloor2[0], (float) mFloor2[1], 30, blue_paintbrush_fill);
+                        canvas.drawCircle((float) mFloor2[0], (float) mFloor2[1], 40, blue_paintbrush_blur_fill);
+                    }
+
+                }
+                else if (mStartingFloor == 2) {
+
+                    if (mFloorPath == 2) {
+                        canvas.drawCircle((float) mFloor3[0], (float) mFloor3[1], 30, blue_paintbrush_fill);
+                        canvas.drawCircle((float) mFloor3[0], (float) mFloor3[1], 40, blue_paintbrush_blur_fill);
+                    }
+
+                }
+
                 canvas.drawPath(path, blue_paintbrush_stroke);
-                canvas.drawPath(path, blue_paintbrush_blur);
+                canvas.drawPath(path, blue_paintbrush_blur_stroke);
 
             }
             canvas.restore();
@@ -235,7 +267,7 @@ public class PinchZoomPan extends View {
         float aspectRatio = (float) bitmap.getHeight()/(float) bitmap.getWidth();
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         //control how zoomed in map is on startup
-        mImageWidth = (int) (displayMetrics.widthPixels + (displayMetrics.widthPixels*0.4));
+        mImageWidth = (int) (displayMetrics.widthPixels + (displayMetrics.widthPixels*0.9));
         mImageHeight = Math.round(mImageWidth * aspectRatio);
         mBitmap = bitmap.createScaledBitmap(bitmap, mImageWidth, mImageHeight, false);
         invalidate();
@@ -257,48 +289,77 @@ public class PinchZoomPan extends View {
         }
     }
 
-    public void makePath( float[] coordinates){
+    public void makePath( double[] coordinates){
 
-        path.moveTo(coordinates[0], coordinates[1]);
+        path.moveTo((float) coordinates[0], (float) coordinates[1]);
 
         for (int i = 2; i < coordinates.length; i += 2) {
 
-            path.lineTo(coordinates[i], coordinates[i+1]);
-            path.moveTo(coordinates[i], coordinates[i+1]);
+            path.lineTo((float) coordinates[i], (float) coordinates[i+1]);
+            path.moveTo((float) coordinates[i], (float) coordinates[i+1]);
 
         }
 
     }
 
-    public void popCoordinates(float[] coordinates) {
+    public void popCoordinates(double[] coordinates) {
 
-        //might need to do a conversion of Arc GIS coordinates to bitmap coordinates here
+        if (coordinates != null && coordinates.length % 3 == 0) {
 
-        mCoordinates = coordinates;
+            double feetX = 292.85106426594839358758271385385;
+            double feetY = 263.82978762698053476358803049896;
+            double metersX = 89.261004388261071085;
+            double metersY = 80.415319268703669309;
+            double bitmapX = mBitmap.getWidth();
+            double bitmapY = mBitmap.getHeight();
 
-        if (mCoordinates != null) {
+            for (int i = 1; i < coordinates.length; i += 3) {
+
+                coordinates[i] = coordinates[i] - 763696.698424;
+                coordinates[i + 1] = (coordinates[i + 1] - 2147994.369232) * (-1);
+
+                coordinates[i] = (coordinates[i] * bitmapX * 1.15) / metersX;
+                coordinates[i + 1] = (coordinates[i + 1] * bitmapY * 1.05) / metersY;
+
+            }
+
+        }
+
+            mCoordinates = coordinates;
+
+        if (mCoordinates != null && mCoordinates.length % 3 == 0) {
 
             int count1 = 0;
             int count2 = 0;
             int count3 = 0;
+            double[] floor1 = null;
+            double[] floor2 = null;
+            double[] floor3 = null;
 
             for (int i = 0; i < mCoordinates.length; i += 3) {
 
                 if (mCoordinates[i] == 0) {
                     count1++;
                 }
-                else if (mCoordinates[i] == 1) {
+                else if (mCoordinates[i] == 3.6576000000059139) {
                     count2++;
                 }
-                else if (mCoordinates[i] == 2) {
+                else if (mCoordinates[i] == 7.315199999997276) {
                     count3++;
                 }
 
             }
 
-            float [] floor1 = new float[count1 * 2];
-            float [] floor2 = new float[count2 * 2];
-            float [] floor3 = new float[count3 * 2];
+            if (count1 != 0) {
+                floor1 = new double[count1 * 2];
+            }
+            if (count2 != 0) {
+                floor2 = new double[count2 * 2];
+            }
+            if (count3 != 0) {
+                floor3 = new double[count3 * 2];
+            }
+
             int placeHolder1 = 0;
             int placeHolder2 = 0;
             int placeHolder3 = 0;
@@ -310,12 +371,12 @@ public class PinchZoomPan extends View {
                     floor1[placeHolder1 + 1] = mCoordinates[i + 2];
                     placeHolder1 += 2;
                 }
-                else if (mCoordinates[i] == 1) {
+                else if (mCoordinates[i] == 3.6576000000059139) {
                     floor2[placeHolder2] = mCoordinates[i + 1];
                     floor2[placeHolder2 + 1] = mCoordinates[i + 2];
                     placeHolder2 += 2;
                 }
-                else if (mCoordinates[i] == 2) {
+                else if (mCoordinates[i] == 7.315199999997276) {
                     floor3[placeHolder3] = mCoordinates[i + 1];
                     floor3[placeHolder3 + 1] = mCoordinates[i + 2];
                     placeHolder3 += 2;
@@ -323,13 +384,22 @@ public class PinchZoomPan extends View {
 
             }
 
+            if (mCoordinates[0] == 0) {
+                mStartingFloor = 0;
+            }
+            else if (mCoordinates[0] == 3.6576000000059139) {
+                mStartingFloor = 1;
+            }
+            else if (mCoordinates[0] == 7.315199999997276) {
+                mStartingFloor = 2;
+            }
+
             mFloor1 = floor1;
             mFloor2 = floor2;
             mFloor3 = floor3;
 
-            invalidate();
-
         }
+        invalidate();
 
     }
 

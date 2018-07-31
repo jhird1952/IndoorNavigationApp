@@ -7,4 +7,5 @@
     <color name="colorBtnPressed">#008542</color>
     <color name="colorPath">#0033FF</color>
     <color name="colorPathBlur">#80033FFF</color>
+    <color name="colorGray">#A9A9A9</color>
 </resources>
