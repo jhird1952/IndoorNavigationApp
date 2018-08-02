@@ -11,9 +11,9 @@
     <string name="btn_both">Both</string>
     <string name="btn_elevator">Elevator</string>
     <string name="btn_navigate">Navigate</string>
-    <string name="first_floor">Floor 1</string>
-    <string name="second_floor">Floor 2</string>
-    <string name="third_floor">Floor 3</string>
+    <string name="first_floor">Level 2</string>
+    <string name="second_floor">Level 3</string>
+    <string name="third_floor">Level 4</string>
     <string name="user_location">Your Location</string>
     <string name="btn_start_nav">Start</string>
 
