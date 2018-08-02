@@ -13,7 +13,7 @@ import android.widget.TextView;
 public class QuickNavMenuActivity extends AppCompatActivity {
 
     private Communicator communicator;
-    private float[] coordinates;
+    private double[] coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +30,7 @@ public class QuickNavMenuActivity extends AppCompatActivity {
         Button btnEntertainment = findViewById(R.id.btnEntertainment);
         ImageView ivUTD = findViewById(R.id.ivUTD);
         ImageButton imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
-        coordinates = new float[] {0, 510, 850, 0, 580, 850, 0, 580, 1040, 0, 1760, 1040};
+        coordinates = new double[] {0,763730.923299998,2147981.0242,0,763729.7814999968,2147981.0053999983,0,763729.7805999964,2147980.8935000002};
 
         setSupportActionBar(toolbar);
         ivUTD.setVisibility(View.GONE);
@@ -40,22 +40,15 @@ public class QuickNavMenuActivity extends AppCompatActivity {
         imBtnBackArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent startMainActivity = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(startMainActivity);
-
             }
         });
 
         btnBathrooms.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                communicator.setFromLocation("CMX");
-                communicator.setToLocation("Bathroom");
-                //coordinates = communicator.queryServer();
                 displayQuickNavPath();
-
             }
         });
 
@@ -63,9 +56,6 @@ public class QuickNavMenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                communicator.setFromLocation("CMX");
-                communicator.setToLocation("Storm Shelter");
-                //coordinates = communicator.queryServer();
                 displayQuickNavPath();
 
             }
@@ -74,36 +64,21 @@ public class QuickNavMenuActivity extends AppCompatActivity {
         btnWaterFountains.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                communicator.setFromLocation("CMX");
-                communicator.setToLocation("Water Fountain");
-                //coordinates = communicator.queryServer();
                 displayQuickNavPath();
-
             }
         });
 
         btnFood.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                communicator.setFromLocation("CMX");
-                communicator.setToLocation("Food");
-                coordinates = communicator.queryServer();
                 displayQuickNavPath();
-
             }
         });
 
         btnEntertainment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                communicator.setFromLocation("CMX");
-                communicator.setToLocation("Entertainment");
-                //coordinates = communicator.queryServer();
                 displayQuickNavPath();
-
             }
         });
 
