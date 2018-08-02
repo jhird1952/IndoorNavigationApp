@@ -14,14 +14,8 @@
                 <menu>
 
                     <item
-                        android:id="@+id/GRR2.100"
-                        android:title="2.100"/>
-                    <item
                         android:id="@+id/GRR2.102"
                         android:title="2.102"/>
-                    <item
-                        android:id="@+id/GRR2.106"
-                        android:title="2.106"/>
                     <item
                         android:id="@+id/GRR2.108"
                         android:title="2.108"/>
@@ -89,9 +83,6 @@
                     <item
                         android:id="@+id/GRR2.220D"
                         android:title="2.220D"/>
-                    <item
-                        android:id="@+id/GRR2.222"
-                        android:title="2.222"/>
                     <item
                         android:id="@+id/GRR2.228"
                         android:title="2.228"/>
@@ -249,9 +240,6 @@
                         android:id="@+id/GRR2.522"
                         android:title="2.522"/>
                     <item
-                        android:id="@+id/GRR2.524"
-                        android:title="2.524"/>
-                    <item
                         android:id="@+id/GRR2.530"
                         android:title="2.530"/>
                     <item
@@ -392,9 +380,6 @@
                     <item
                         android:id="@+id/GRR2.812A"
                         android:title="2.812A"/>
-                    <item
-                        android:id="@+id/GRR2.813"
-                        android:title="2.813"/>
                     <item
                         android:id="@+id/GRR2.814"
                         android:title="2.814"/>
@@ -610,9 +595,6 @@
                     <item
                         android:id="@+id/GRR3.3C1"
                         android:title="3.3C1"/>
-                    <item
-                        android:id="@+id/GRR3.3V2"
-                        android:title="3.3V2"/>
 
                 </menu>
 
@@ -713,9 +695,6 @@
                 <menu>
 
                     <item
-                        android:id="@+id/GRR3.601"
-                        android:title="3.601"/>
-                    <item
                         android:id="@+id/GRR3.602"
                         android:title="3.602"/>
                     <item
@@ -724,9 +703,6 @@
                     <item
                         android:id="@+id/GRR3.610"
                         android:title="3.610"/>
-                    <item
-                        android:id="@+id/GRR3.6V1"
-                        android:title="3.6V1"/>
 
                 </menu>
 
@@ -1172,12 +1148,6 @@
                     <item
                         android:id="@+id/GRR4.608"
                         android:title="4.608"/>
-                    <item
-                        android:id="@+id/GRR4.6V1"
-                        android:title="4.6V1"/>
-                    <item
-                        android:id="@+id/GRR4.6V2"
-                        android:title="4.6V2"/>
 
                 </menu>
 
