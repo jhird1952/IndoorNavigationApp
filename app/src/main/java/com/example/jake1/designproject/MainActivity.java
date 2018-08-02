@@ -246,6 +246,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 double[] coordinates = new double[] {0,763730.923299998,2147981.0242,0,763729.7814999968,2147981.0053999983,0,763729.7805999964,2147980.8935000002};
+
+                
                 Intent startNavigationActivity = new Intent(getApplicationContext(), NavigationActivity.class);
                 startNavigationActivity.putExtra("finalDestination", etTo.getText().toString());
                 startNavigationActivity.putExtra("navigationArray", coordinates);
@@ -403,7 +405,7 @@ public class MainActivity extends AppCompatActivity {
         imBtnBackArrow.setVisibility(View.VISIBLE);
         btnStartNav.setVisibility(View.VISIBLE);
 
-        pinchZoomPan.popCoordinates(coordinates);
+       // pinchZoomPan.popCoordinates(coordinates);
 
     }
 

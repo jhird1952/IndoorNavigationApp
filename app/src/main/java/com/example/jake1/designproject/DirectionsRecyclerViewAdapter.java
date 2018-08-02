@@ -38,6 +38,11 @@ public class DirectionsRecyclerViewAdapter extends RecyclerView.Adapter<Directio
 
     }
 
+    public void setData(List<String> newData) {
+        mData = newData;
+        notifyDataSetChanged();
+    }
+
     public class DirectionsViewHolder extends RecyclerView.ViewHolder{
 
         TextView DirectionView;
@@ -47,4 +52,6 @@ public class DirectionsRecyclerViewAdapter extends RecyclerView.Adapter<Directio
             DirectionView = itemView.findViewById(R.id.tv_directionDisplay);
         }
     }
+
+
 }

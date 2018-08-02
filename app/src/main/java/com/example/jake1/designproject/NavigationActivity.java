@@ -32,6 +32,7 @@ import org.json.JSONObject;
 
 import java.lang.Math;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class NavigationActivity extends AppCompatActivity {
@@ -94,6 +95,14 @@ public class NavigationActivity extends AppCompatActivity {
 
                     double[] coordinates = getIntent().getExtras().getDoubleArray("navigationArray");
 
+                    double[][] segmentedCoordinates= formatPathData(coordinates);
+                    String[] directionsList= DirectionMessagesList(segmentedCoordinates);
+
+
+
+                    mAdapter.setData(Arrays.asList(directionsList));
+
+
                     directionText.setText("" + String.valueOf(coordinates[1]));
                     navView.displayPath(coordinates);
 
@@ -123,7 +132,7 @@ public class NavigationActivity extends AppCompatActivity {
         tempStrings.add("hello4");
         tempStrings.add("hello5");
 
-        RecyclerView directionsRecyclerView = findViewById(R.id.rv_directionVIew);
+        RecyclerView directionsRecyclerView = findViewById(R.id.rv_recyclerView);
         directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter= new DirectionsRecyclerViewAdapter(this, tempStrings);
         directionsRecyclerView.setAdapter(mAdapter);
@@ -208,7 +217,7 @@ public class NavigationActivity extends AppCompatActivity {
             } else
                 arrowImage.setRotation(90);
                 arrowImage.setRotation(90);
-                directionText.setText("Keep straight.");
+                directionText.setText("Keep straight");
             return true;
         }
         return false;
@@ -303,13 +312,16 @@ public class NavigationActivity extends AppCompatActivity {
 
     }
 
-    public void formatPathData(double coordinatesArray[]){
+    public double[][] formatPathData(double coordinatesArray[]){
         // formats the 1D array of doubles received from ArcGIS and turns them into a 2D array with coordinates in the
         // z,x,y format on each row
         double[][] coordinatesList=new double[coordinatesArray.length/3][3];
         for(int i=0; i<coordinatesArray.length; i++){
             coordinatesList[i/3][i%3]= coordinatesArray[i];
         }
+
+        return coordinatesList;
+
     }
 
     public double[] RecalculatePath(double coordinates[][], double myCord[]){
@@ -328,6 +340,53 @@ public class NavigationActivity extends AppCompatActivity {
         else
             return null;
 
+    }
+    public String[] DirectionMessagesList(double[][] arr){
+        ArrayList<String> directionsList= new ArrayList<String>();
+        double distance=0.0;
+        double epsilon = 0.25854206621;
+        for(int i=0;i<arr.length;i++){
+            if(i==0 || i==arr.length-1)
+                continue;
+            else
+            {
+                double[] previous= arr[i-1];
+                double[] current= arr[i];
+                double[] next= arr[i+1];
+                double zChange = zChange(previous, current, next);
+                double Direction= determineDirection(previous,current,next);
+
+
+                if(zChange !=0 || Direction>epsilon || Direction<-epsilon )
+                {
+                    if(distance>0){
+                        directionsList.add("Go straight for " + distance);
+
+                    }
+                    distance=0;
+
+                    if(zChange>0){
+                        directionsList.add("Go up");
+                    }
+                    else if(zChange<0){
+                        directionsList.add("Go down");
+                    }
+                    else if(Direction>epsilon){
+                        directionsList.add("Turn right");
+                    }
+                    else if(Direction<-epsilon){
+                        directionsList.add("Turn left");
+                    }
+
+                }
+                else
+                    distance+=distanceFormula(current,next);
+            }
+
+        }
+
+
+        return directionsList.toArray(new String[directionsList.size()]);
     }
 
 }
