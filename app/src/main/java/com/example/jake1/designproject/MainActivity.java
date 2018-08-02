@@ -22,6 +22,10 @@ import com.example.jake1.designproject.services.AsyncResponse;
 import com.example.jake1.designproject.services.UiService;
 import com.example.jake1.designproject.services.WebServiceCaller;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -224,12 +228,15 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void returnResponse(String result) {
                         UiService.printString(result);
+                        try {
+                            double[] coordinates = parseRoutes(result, "route");
+                            displayPath(coordinates);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 };
                 WebServiceCaller.request(MainActivity.this, "https://ecsclark18.utdallas.edu/", "index.php", etFrom.getText().toString(), etTo.getText().toString(), takeStairs, takeElevator, asyncResponse);
-
-                double[] coordinates = new double[] {0,763730.923299998,2147981.0242,0,763729.7814999968,2147981.0053999983,0,763729.7805999964,2147980.8935000002};
-                displayPath(coordinates);
 
             }
         });
@@ -398,6 +405,17 @@ public class MainActivity extends AppCompatActivity {
 
         pinchZoomPan.popCoordinates(coordinates);
 
+    }
+
+    public static double[] parseRoutes(String jsonString, String key) throws JSONException {
+        JSONObject json = new JSONObject(jsonString);
+        JSONArray data = json.getJSONArray(key);
+        double[] values = new double[data.length()];
+        for (int i=0; i< data.length(); i++) {
+            values[i] = (double) data.getDouble(i);
+        }
+
+        return values;
     }
 
 }
