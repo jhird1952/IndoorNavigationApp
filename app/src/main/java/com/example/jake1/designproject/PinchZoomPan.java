@@ -186,6 +186,7 @@ public class PinchZoomPan extends View {
             canvas.translate(mPositionX, mPositionY);
             canvas.scale(mScaleFactor, mScaleFactor);
             canvas.drawBitmap(mBitmap, 0, 0, null);
+
             if (!path.isEmpty()) {
 
                 blue_paintbrush_stroke = new Paint();
