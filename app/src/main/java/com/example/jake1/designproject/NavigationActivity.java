@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.Math;
+import java.util.ArrayList;
 
 
 public class NavigationActivity extends AppCompatActivity {
@@ -41,6 +44,7 @@ public class NavigationActivity extends AppCompatActivity {
     private static ImageView arrowImage;
     private static ImageView arrowImage2;
     private ImageView locationDot;
+    private DirectionsRecyclerViewAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +111,22 @@ public class NavigationActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+        // Recycler View is being set here..
+        ArrayList<String> tempStrings= new ArrayList<>();
+        tempStrings.add("hello");
+        tempStrings.add("hello1");
+        tempStrings.add("hello2");
+        tempStrings.add("hello3");
+        tempStrings.add("hello4");
+        tempStrings.add("hello5");
+
+        RecyclerView directionsRecyclerView = findViewById(R.id.rv_directionVIew);
+        directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter= new DirectionsRecyclerViewAdapter(this, tempStrings);
+        directionsRecyclerView.setAdapter(mAdapter);
 
     }
 
@@ -189,6 +209,42 @@ public class NavigationActivity extends AppCompatActivity {
                 arrowImage.setRotation(90);
                 arrowImage.setRotation(90);
                 directionText.setText("Keep straight.");
+            return true;
+        }
+        return false;
+    }
+    public static boolean getDirectionMessage(double[] rArray1, double[] rArray2, double[] rArray3) {
+        // same method as above but modified for RecyclerView to format strings.
+        //absolute value margin of error for a straight line
+        double epsilon = 0.25854206621;
+
+        //this determines whether you should go up a floor or down a floor (the value of z changes)
+        // I might have to wrap code for vertical movement.
+        if(zChange(rArray1,rArray2,rArray3) > 0 ){
+            //set the image to be an up arrow since we're going up a floor
+
+            directionText.setText("Go up " + zChange(rArray1,rArray2,rArray3) + " floor(s).");
+        }
+        else if(zChange(rArray1,rArray2,rArray3) < 0) {
+            //set the image to be a down arrow since we're going down a floor
+
+            directionText.setText("Go down " + -zChange(rArray1,rArray2,rArray3) + " floor(s).");
+        }
+        //this determines whether the arrow shows right or left
+        else {
+            if (determineDirection(rArray1, rArray2, rArray3) > epsilon) {
+                //set the image to be a right arrow since we're going right
+
+                directionText.setText("Take a right turn.");
+                return false;
+            } else if (determineDirection(rArray1, rArray2, rArray3) < -epsilon) {
+                //set the image to be a left arrow since we're going left
+
+                directionText.setText("Take a left turn.");
+                return false;
+            } else
+
+            directionText.setText("Keep straight.");
             return true;
         }
         return false;
