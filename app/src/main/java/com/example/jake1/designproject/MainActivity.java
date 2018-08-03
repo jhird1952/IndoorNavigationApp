@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     static boolean takeStairs;
     static boolean takeElevator;
 
+    private double[] coordinates;
+
     //URL to the web-server, change it to your web-server's URL
     private String serverURL = "http://ecsclark18.utdallas.edu";
     //a variable to hold the parsed path data from ArcGIS
@@ -112,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
         pumFrom = new PopupMenu(this, etFrom);
         pumTo = new PopupMenu(this, etTo);
 
+        etFrom.setText("2.322");
+        etTo.setText("2.512");
     }
 
     private void setListeners() {
@@ -220,6 +224,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         btnNavigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
                         UiService.printString(result);
                         try {
                             double[] coordinates = parseRoutes(result, "route");
+                            saveCoordinates(coordinates);
                             displayPath(coordinates);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -247,7 +254,11 @@ public class MainActivity extends AppCompatActivity {
 
                 double[] coordinates = new double[] {0,763730.923299998,2147981.0242,0,763729.7814999968,2147981.0053999983,0,763729.7805999964,2147980.8935000002};
 
-                
+                if (getCoordinates() != null) {
+                    coordinates = getCoordinates();
+                }
+
+
                 Intent startNavigationActivity = new Intent(getApplicationContext(), NavigationActivity.class);
                 startNavigationActivity.putExtra("finalDestination", etTo.getText().toString());
                 startNavigationActivity.putExtra("navigationArray", coordinates);
@@ -416,8 +427,15 @@ public class MainActivity extends AppCompatActivity {
         for (int i=0; i< data.length(); i++) {
             values[i] = (double) data.getDouble(i);
         }
-
         return values;
+    }
+
+    public void saveCoordinates(double[] coordinates) {
+        this.coordinates = coordinates;
+    }
+
+    public double[] getCoordinates() {
+        return this.coordinates;
     }
 
 }

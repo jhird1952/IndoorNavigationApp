@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -74,6 +75,8 @@ public class NavigationActivity extends AppCompatActivity {
 
         String finalDestination = getIntent().getExtras().getString("finalDestination");
         tvToolbarTitle.setText("Path to " + finalDestination);
+
+        setDirectionTextViewListener();
 
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -341,18 +344,26 @@ public class NavigationActivity extends AppCompatActivity {
             return null;
 
     }
+
     public String[] DirectionMessagesList(double[][] arr){
         ArrayList<String> directionsList= new ArrayList<String>();
         double distance=0.0;
-        double epsilon = 0.25854206621;
-        for(int i=0;i<arr.length;i++){
+        double epsilon = Math.pow(0.25854206621,-9);
+        for(int i=0;i<arr.length / 3;i++){
             if(i==0 || i==arr.length-1)
                 continue;
             else
             {
-                double[] previous= arr[i-1];
-                double[] current= arr[i];
-                double[] next= arr[i+1];
+
+                int offset = i * 3;
+
+                if (offset > arr.length - 3) {
+                    continue;
+                }
+
+                double[] previous= arr[offset-1];
+                double[] current= arr[offset];
+                double[] next= arr[offset+1];
                 double zChange = zChange(previous, current, next);
                 double Direction= determineDirection(previous,current,next);
 
@@ -360,21 +371,20 @@ public class NavigationActivity extends AppCompatActivity {
                 if(zChange !=0 || Direction>epsilon || Direction<-epsilon )
                 {
                     if(distance>0){
-                        directionsList.add("Go straight for " + distance);
-
+                        directionsList.add("Go straight for " + Math.round(distance) + " meters");
                     }
                     distance=0;
 
                     if(zChange>0){
                         directionsList.add("Go up");
                     }
-                    else if(zChange<0){
+                    if(zChange<-0){
                         directionsList.add("Go down");
                     }
-                    else if(Direction>epsilon){
+                    if(Direction>epsilon){
                         directionsList.add("Turn right");
                     }
-                    else if(Direction<-epsilon){
+                    if(Direction<-epsilon){
                         directionsList.add("Turn left");
                     }
 
@@ -385,8 +395,26 @@ public class NavigationActivity extends AppCompatActivity {
 
         }
 
+        if(distance>0){
+            directionsList.add("Go straight for " + Math.round(distance) + " meters");
+        }
 
         return directionsList.toArray(new String[directionsList.size()]);
+    }
+
+
+    public void setDirectionTextViewListener() {
+        directionText.setOnClickListener(new View.OnClickListener() {
+
+            boolean isExpanded = false;
+            AppBarLayout appBarLayout = findViewById(R.id.content_app_bar_layout);
+
+            @Override
+            public void onClick(View v) {
+                isExpanded = !isExpanded;
+                appBarLayout.setExpanded(isExpanded);
+            }
+        });
     }
 
 }
