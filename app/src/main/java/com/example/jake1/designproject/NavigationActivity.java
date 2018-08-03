@@ -36,6 +36,8 @@ import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.lang.Math.abs;
+
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -333,52 +335,108 @@ public class NavigationActivity extends AppCompatActivity {
         }
         else
             return null;
-
     }
+
+    private final int SLICES = 9;
+    private final int OFFSET_STEP = SLICES / 3;
 
     public String[] directionMessagesList(double[][] arr){
         ArrayList<String> directionsList = new ArrayList<String>();
+        String previousDirection = UNKNOWN;
+        String cardinalDirection = UNKNOWN;
+        double previousDistance = 0.0;
+        double currentDistance = 0.0;
         double distance = 0.0;
         double epsilon = Math.pow(0.25854206621, -9);
-        for (int i = 0; i < arr.length / 3; i++) {
+        for (int i = 0; i < arr.length / SLICES; i++) {
             if(i == 0 || i == arr.length-1) {
                 continue;
             } else {
-                int offset = i * 3;
-                if (offset > arr.length - 3) {
+                int offset = i * SLICES;
+                if (offset > arr.length - SLICES) {
                     continue;
                 }
-                double[] previous = arr[offset-1];
+                double[] previous = arr[offset - OFFSET_STEP];
                 double[] current = arr[offset];
-                double[] next = arr[offset+1];
+                double[] next = arr[offset + OFFSET_STEP];
                 double dz = getDz(previous, current, next);
                 double direction = determineDirection(previous, current, next);
-                Log.d("NavActivity", "direction > epsilon: " + (direction > epsilon));
-                Log.d("NavActivity", "direction < -epsilon: " + (direction < -epsilon));
+                cardinalDirection = getCardinalDirection(previous, current, next);
+                if (!cardinalDirection.equals(previousDirection) && distance != 0) {
+                    currentDistance = distance - previousDistance;
+                    previousDistance = distance;
+                    generateDirectionMessage(currentDistance, dz, cardinalDirection, directionsList);
+                    previousDirection = cardinalDirection;
+                }
+                Log.d("NavActivity", "direction: " + direction);
+                Log.d("NavActivity", "cardinal: " + cardinalDirection);
                 //if(|| direction > epsilon || direction < -epsilon )
-                if(dz != 0 || direction > epsilon || direction < -epsilon ) {
-                    Log.d("NavActivity", "direction fits condition: " + epsilon);
-                    generateDirectionMessage(distance, dz, direction, epsilon, directionsList);
-                }
-                else {
-                    distance += distanceFormula(current, next);
-                    generateDirectionMessage(distance, dz, direction, epsilon, directionsList);
-                }
+                distance += distanceFormula(current, next);
             }
         }
-        if(distance > 0){
-            directionsList.add("Go straight for " + Math.round(distance) + " meters");
+        if (distance != 0 && distance != previousDistance) {
+            currentDistance = distance - previousDistance;
+            generateDistanceMessage(currentDistance, directionsList);
         }
         return directionsList.toArray(new String[directionsList.size()]);
+    }
+
+    private final String NORTH = "N";
+    private final String SOUTH = "S";
+    private final String WEST = "W";
+    private final String EAST = "E";
+    private final String NORTHWEST = "NW";
+    private final String NORTHEAST = "NE";
+    private final String SOUTHWEST = "SW";
+    private final String SOUTHEAST = "SE";
+    private final String UNKNOWN = "U";
+
+    private final int X_INDEX = 1;
+    private final int Y_INDEX = 2;
+
+    public String getCardinalDirection(double[] previous, double[] current, double[] next) {
+        String cardinalDirection = UNKNOWN;
+        int horizontal = 0;
+        int vertical = 0;
+        double dx = abs(current[X_INDEX] - next[X_INDEX]);
+        double dy = abs(current[Y_INDEX] - next[Y_INDEX]);
+        if (current[X_INDEX] == next[X_INDEX]) {
+            horizontal = 0;
+        } else if (current[X_INDEX] > next[X_INDEX]) {
+            horizontal = -1;
+        } else if (current[X_INDEX] < next[X_INDEX]) {
+            horizontal = 1;
+        }
+        if (current[Y_INDEX] == next[Y_INDEX]) {
+            vertical = 0;
+        } else if (current[Y_INDEX] > next[Y_INDEX]) {
+            vertical = -1;
+        } else if (current[Y_INDEX] < next[Y_INDEX]) {
+            vertical = 1;
+        }
+        if (dx > dy) {
+            if (horizontal < 0) {
+                cardinalDirection = WEST;
+            } else if (horizontal > 0) {
+                cardinalDirection = EAST;
+            }
+        } else if (dx < dy) {
+            if (vertical < 0) {
+                cardinalDirection = SOUTH;
+            } else if (vertical > 0) {
+                cardinalDirection = NORTH;
+            }
+        }
+        return cardinalDirection;
     }
 
     public void generateDirectionMessage(double distance, double dz,
                                            double direction, double epsilon,
                                            ArrayList<String> directionsList) {
         if(distance > 0){
-            directionsList.add("Go straight for " + Math.round(distance) + " meters");
+            generateDistanceMessage(distance, directionsList);
         }
-        distance = 0;
+        //distance = 0;
         if(dz > 0){
             directionsList.add("Go up");
         }
@@ -390,6 +448,29 @@ public class NavigationActivity extends AppCompatActivity {
         }
         if(direction < -epsilon){
             directionsList.add("Turn left");
+        }
+    }
+
+    public void generateDistanceMessage(double distance, ArrayList<String> directionsList) {
+        if(distance > 0){
+            directionsList.add("Go straight for " + Math.round(distance) + " meters");
+        }
+    }
+
+    public void generateDirectionMessage(double distance, double dz,
+                                         String cardinalDirection,
+                                         ArrayList<String> directionsList) {
+        if(distance > 0){
+            generateDistanceMessage(distance, directionsList);
+        }
+        if(dz > 0){
+            directionsList.add("Go up");
+        }
+        if(dz < -0){
+            directionsList.add("Go down");
+        }
+        if (!cardinalDirection.equals(UNKNOWN)) {
+            directionsList.add("Turn " + cardinalDirection);
         }
     }
 
