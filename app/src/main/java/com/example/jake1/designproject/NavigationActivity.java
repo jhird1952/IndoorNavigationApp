@@ -106,7 +106,7 @@ public class NavigationActivity extends AppCompatActivity {
                     mAdapter.setData(Arrays.asList(directionsList));
 
 
-                    directionText.setText("" + String.valueOf(coordinates[1]));
+                    directionText.setText(directionsList[0]);
                     navView.displayPath(coordinates);
 
                 }
@@ -348,7 +348,7 @@ public class NavigationActivity extends AppCompatActivity {
     public String[] DirectionMessagesList(double[][] arr){
         ArrayList<String> directionsList= new ArrayList<String>();
         double distance=0.0;
-        double epsilon = Math.pow(0.25854206621,-9);
+        double epsilon = Math.pow(0.25854206621,1);
         for(int i=0;i<arr.length / 3;i++){
             if(i==0 || i==arr.length-1)
                 continue;
@@ -371,7 +371,7 @@ public class NavigationActivity extends AppCompatActivity {
                 if(zChange !=0 || Direction>epsilon || Direction<-epsilon )
                 {
                     if(distance>0){
-                        directionsList.add("Go straight for " + Math.round(distance) + " meters");
+                        directionsList.add("Go straight for " + Math.round(distance) + " meters" );
                     }
                     distance=0;
 

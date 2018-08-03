@@ -114,8 +114,7 @@ public class MainActivity extends AppCompatActivity {
         pumFrom = new PopupMenu(this, etFrom);
         pumTo = new PopupMenu(this, etTo);
 
-        etFrom.setText("2.322");
-        etTo.setText("2.512");
+
     }
 
     private void setListeners() {
