@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnStartNav;
     private ImageButton imBtnBackArrow;
     private ImageView ivUTD;
+    private ImageView ivUpDownArrow;
     private PopupMenu pumFrom;
     private PopupMenu pumTo;
     static boolean takeStairs;
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
         btnElevator = findViewById(R.id.btnElevator);
         btnStartNav = findViewById(R.id.btnStartNav);
         ivUTD = findViewById(R.id.ivUTD);
+        ivUpDownArrow = findViewById(R.id.ivUpDownArrow);
         imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
         pumFrom = new PopupMenu(this, etFrom);
         pumTo = new PopupMenu(this, etTo);
@@ -213,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 etFrom.setVisibility(View.VISIBLE);
                 etTo.setVisibility(View.VISIBLE);
                 tvTo.setVisibility(View.VISIBLE);
+                ivUpDownArrow.setVisibility(View.VISIBLE);
 
                 imBtnBackArrow.setVisibility(View.GONE);
                 ivUTD.setVisibility(View.VISIBLE);
@@ -410,12 +413,13 @@ public class MainActivity extends AppCompatActivity {
         etFrom.setVisibility(View.GONE);
         etTo.setVisibility(View.GONE);
         tvTo.setVisibility(View.GONE);
+        ivUpDownArrow.setVisibility(View.GONE);
 
         ivUTD.setVisibility(View.GONE);
         imBtnBackArrow.setVisibility(View.VISIBLE);
         btnStartNav.setVisibility(View.VISIBLE);
 
-       // pinchZoomPan.popCoordinates(coordinates);
+        pinchZoomPan.popCoordinates(coordinates);
 
     }
 
