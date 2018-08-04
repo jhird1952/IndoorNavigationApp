@@ -214,8 +214,6 @@ public class PinchZoomPan extends View {
                     if (mFloorPath == 0) {
                         canvas.drawCircle((float) mCoordinates[1], (float) mCoordinates[2], 30, blue_paintbrush_fill);
                         canvas.drawCircle((float) mCoordinates[1], (float) mCoordinates[2], 40, blue_paintbrush_blur_fill);
-                        //canvas.drawCircle((float) mFloor1[0], (float) mFloor1[1], 30, blue_paintbrush_fill);
-                        //canvas.drawCircle((float) mFloor1[0], (float) mFloor1[1], 40, blue_paintbrush_blur_fill);
                     }
 
                 }
@@ -224,8 +222,6 @@ public class PinchZoomPan extends View {
                     if (mFloorPath == 1) {
                         canvas.drawCircle((float) mCoordinates[1], (float) mCoordinates[2], 30, blue_paintbrush_fill);
                         canvas.drawCircle((float) mCoordinates[1], (float) mCoordinates[2], 40, blue_paintbrush_blur_fill);
-                        //canvas.drawCircle((float) mFloor2[0], (float) mFloor2[1], 30, blue_paintbrush_fill);
-                        //canvas.drawCircle((float) mFloor2[0], (float) mFloor2[1], 40, blue_paintbrush_blur_fill);
                     }
 
                 }
@@ -234,8 +230,6 @@ public class PinchZoomPan extends View {
                     if (mFloorPath == 2) {
                         canvas.drawCircle((float) mCoordinates[1], (float) mCoordinates[2], 30, blue_paintbrush_fill);
                         canvas.drawCircle((float) mCoordinates[1], (float) mCoordinates[2], 40, blue_paintbrush_blur_fill);
-                        //canvas.drawCircle((float) mFloor3[0], (float) mFloor3[1], 30, blue_paintbrush_fill);
-                        //canvas.drawCircle((float) mFloor3[0], (float) mFloor3[1], 40, blue_paintbrush_blur_fill);
                     }
 
                 }

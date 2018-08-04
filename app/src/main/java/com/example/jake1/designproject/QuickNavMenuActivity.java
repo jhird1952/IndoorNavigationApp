@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 public class QuickNavMenuActivity extends AppCompatActivity {
 
-    private Communicator communicator;
     private double[] coordinates;
 
     @Override
@@ -20,7 +19,6 @@ public class QuickNavMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quick_nav_menu);
 
-        communicator = new Communicator();
         Toolbar toolbar = findViewById(R.id.toolbar);
         TextView tvToolbarTitle = findViewById(R.id.tvToolbarTitle);
         Button btnBathrooms = findViewById(R.id.btnBathrooms);
@@ -30,7 +28,6 @@ public class QuickNavMenuActivity extends AppCompatActivity {
         Button btnEntertainment = findViewById(R.id.btnEntertainment);
         ImageView ivUTD = findViewById(R.id.ivUTD);
         ImageButton imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
-        coordinates = new double[] {0,763730.923299998,2147981.0242,0,763729.7814999968,2147981.0053999983,0,763729.7805999964,2147980.8935000002};
 
         setSupportActionBar(toolbar);
         ivUTD.setVisibility(View.GONE);

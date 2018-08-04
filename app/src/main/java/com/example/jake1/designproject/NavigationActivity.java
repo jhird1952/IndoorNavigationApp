@@ -1,7 +1,6 @@
 package com.example.jake1.designproject;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -41,7 +40,6 @@ import static java.lang.Math.abs;
 
 public class NavigationActivity extends AppCompatActivity {
 
-    private Communicator communicator;
     private CountDownTimer locationTimer;
     private ConstraintLayout clNavMap;
     private NavView navView;
@@ -60,7 +58,6 @@ public class NavigationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-        initCommunicator();
         setupUiComponents();
         ViewTreeObserver vto = clNavMap.getViewTreeObserver();
         setSupportActionBar(toolbar);
@@ -132,9 +129,6 @@ public class NavigationActivity extends AppCompatActivity {
         locationDot = findViewById(R.id.ivLocationDot);
     }
 
-    private void initCommunicator() {
-        communicator = new Communicator();
-    }
 
     private void initDirectionList() {
         directionList = new ArrayList<>();

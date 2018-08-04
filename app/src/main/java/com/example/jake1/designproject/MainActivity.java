@@ -53,15 +53,11 @@ public class MainActivity extends AppCompatActivity {
 
     private double[] coordinates;
 
-    //URL to the web-server, change it to your web-server's URL
-    private String serverURL = "http://ecsclark18.utdallas.edu";
-    //a variable to hold the parsed path data from ArcGIS
-    //ArrayList<String[]> parsedPathData = new ArrayList<String[]>();
-    private final String cmxApiUrl = "http://cmxproxy01.utdallas.edu/api";
-    private final String arcGisApiUrl = "10.0.2.2";
-    private final String arcGisApiRoute = "index.php";
-
-    private ArrayList<String[]> parsedPathData = new ArrayList<String[]>();
+    //URLs to services
+    private String serverURL = "https://ecsclark18.utdallas.edu/";
+    private String cmxApiUrl = "http://cmxproxy01.utdallas.edu/api";
+    private String arcGisApiUrl = "10.0.2.2";
+    private String arcGisApiRoute = "index.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,14 +76,6 @@ public class MainActivity extends AppCompatActivity {
             displayPath(getIntent().getExtras().getDoubleArray("coordinateArray"));
         }
 
-    }
-
-    public ArrayList<String[]> getParsedPathData() {
-        return parsedPathData;
-    }
-
-    public void setParsedPathData(ArrayList<String[]> parsedPathData) {
-        this.parsedPathData = parsedPathData;
     }
 
     private void init() {
@@ -245,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 };
-                WebServiceCaller.request(MainActivity.this, "https://ecsclark18.utdallas.edu/", "index.php", etFrom.getText().toString(), etTo.getText().toString(), takeStairs, takeElevator, asyncResponse);
+                WebServiceCaller.request(MainActivity.this, serverURL, arcGisApiRoute, etFrom.getText().toString(), etTo.getText().toString(), takeStairs, takeElevator, asyncResponse);
 
             }
         });
@@ -254,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                double[] coordinates = new double[] {0,763730.923299998,2147981.0242,0,763729.7814999968,2147981.0053999983,0,763729.7805999964,2147980.8935000002};
+                double[] coordinates = null;
 
                 if (getCoordinates() != null) {
                     coordinates = getCoordinates();

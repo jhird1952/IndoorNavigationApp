@@ -8,11 +8,8 @@ import android.graphics.Path;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.ImageView;
 
 import java.io.IOException;
 
