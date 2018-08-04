@@ -360,17 +360,13 @@ public class NavigationActivity extends AppCompatActivity {
                 double[] current = arr[offset];
                 double[] next = arr[offset + OFFSET_STEP];
                 double dz = getDz(previous, current, next);
-                double direction = determineDirection(previous, current, next);
-                cardinalDirection = getCardinalDirection(previous, current, next);
+                cardinalDirection = getCardinalDirection(current, next);
                 if (!cardinalDirection.equals(previousDirection) && distance != 0) {
                     currentDistance = distance - previousDistance;
                     previousDistance = distance;
                     generateDirectionMessage(currentDistance, dz, cardinalDirection, directionsList);
                     previousDirection = cardinalDirection;
                 }
-                Log.d("NavActivity", "direction: " + direction);
-                Log.d("NavActivity", "cardinal: " + cardinalDirection);
-                //if(|| direction > epsilon || direction < -epsilon )
                 distance += distanceFormula(current, next);
             }
         }
@@ -394,7 +390,7 @@ public class NavigationActivity extends AppCompatActivity {
     private final int X_INDEX = 1;
     private final int Y_INDEX = 2;
 
-    public String getCardinalDirection(double[] previous, double[] current, double[] next) {
+    public String getCardinalDirection(double[] current, double[] next) {
         String cardinalDirection = UNKNOWN;
         int horizontal = 0;
         int vertical = 0;
