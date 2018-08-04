@@ -1,6 +1,7 @@
 package com.example.jake1.designproject;
 
 import android.content.Intent;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -35,6 +36,8 @@ import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.lang.Math.abs;
+
 
 public class NavigationActivity extends AppCompatActivity {
 
@@ -42,46 +45,35 @@ public class NavigationActivity extends AppCompatActivity {
     private CountDownTimer locationTimer;
     private ConstraintLayout clNavMap;
     private NavView navView;
+    private Toolbar toolbar;
+    private TextView tvToolbarTitle;
+    private ImageButton imBtnBackArrow;
+    private ImageView ivUTD;
     private static TextView directionText;
     private static ImageView arrowImage;
     private static ImageView arrowImage2;
     private ImageView locationDot;
     private DirectionsRecyclerViewAdapter mAdapter;
+    private ArrayList<String> directionList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
-
-        communicator = new Communicator();
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        clNavMap = findViewById(R.id.clNavMap);
-        navView = findViewById(R.id.navView);
-        TextView tvToolbarTitle = findViewById(R.id.tvToolbarTitle);
-        directionText = findViewById(R.id.tvDirections);
-        ImageButton imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
-        ImageView ivUTD = findViewById(R.id.ivUTD);
-        arrowImage = findViewById(R.id.ivDirectionArrow1);
-        arrowImage2 = findViewById(R.id.ivDirectionArrow2);
-        navView = findViewById(R.id.navView);
-        locationDot = findViewById(R.id.ivLocationDot);
+        initCommunicator();
+        setupUiComponents();
         ViewTreeObserver vto = clNavMap.getViewTreeObserver();
-
         setSupportActionBar(toolbar);
         ivUTD.setVisibility(View.GONE);
         imBtnBackArrow.setVisibility(View.VISIBLE);
         tvToolbarTitle.setText(R.string.final_destination);
         //updateLocation();
-
         String finalDestination = getIntent().getExtras().getString("finalDestination");
         tvToolbarTitle.setText("Path to " + finalDestination);
-
         setDirectionTextViewListener();
-
         vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
                     clNavMap.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 } else {
@@ -89,28 +81,18 @@ public class NavigationActivity extends AppCompatActivity {
                 }
                 int width  = clNavMap.getMeasuredWidth();
                 int height = clNavMap.getMeasuredHeight();
-
                 navView.setImageWidth(width);
                 navView.setImageHeight(height);
                 navView.loadMap();
-
                 if (getIntent().hasExtra("navigationArray")) {
-
                     double[] coordinates = getIntent().getExtras().getDoubleArray("navigationArray");
-
-                    double[][] segmentedCoordinates= formatPathData(coordinates);
-                    String[] directionsList= DirectionMessagesList(segmentedCoordinates);
-
-
-
+                    double[][] segmentedCoordinates = formatPathData(coordinates);
+                    String[] directionsList = directionMessagesList(segmentedCoordinates);
+                    Log.d("NavActivity", "directionsList length: " + directionsList.length);
                     mAdapter.setData(Arrays.asList(directionsList));
-
-
-                    directionText.setText(directionsList[0]);
+                    setDirectionText(directionsList[0]);
                     navView.displayPath(coordinates);
-
                 }
-
             }
         });
 
@@ -123,23 +105,39 @@ public class NavigationActivity extends AppCompatActivity {
 
             }
         });
-
-
-
         // Recycler View is being set here..
-        ArrayList<String> tempStrings= new ArrayList<>();
-        tempStrings.add("hello");
-        tempStrings.add("hello1");
-        tempStrings.add("hello2");
-        tempStrings.add("hello3");
-        tempStrings.add("hello4");
-        tempStrings.add("hello5");
-
+        ArrayList<String> directionList= new ArrayList<>();
         RecyclerView directionsRecyclerView = findViewById(R.id.rv_recyclerView);
         directionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter= new DirectionsRecyclerViewAdapter(this, tempStrings);
+        mAdapter= new DirectionsRecyclerViewAdapter(this, directionList);
         directionsRecyclerView.setAdapter(mAdapter);
 
+    }
+
+    private void setDirectionText(String direction) {
+        directionText.setText(direction);
+    }
+
+    private void setupUiComponents() {
+        toolbar = findViewById(R.id.toolbar);
+        clNavMap = findViewById(R.id.clNavMap);
+        navView = findViewById(R.id.navView);
+        tvToolbarTitle = findViewById(R.id.tvToolbarTitle);
+        directionText = findViewById(R.id.tvDirections);
+        imBtnBackArrow = findViewById(R.id.imBtnBackArrow);
+        ivUTD = findViewById(R.id.ivUTD);
+        arrowImage = findViewById(R.id.ivDirectionArrow1);
+        arrowImage2 = findViewById(R.id.ivDirectionArrow2);
+        navView = findViewById(R.id.navView);
+        locationDot = findViewById(R.id.ivLocationDot);
+    }
+
+    private void initCommunicator() {
+        communicator = new Communicator();
+    }
+
+    private void initDirectionList() {
+        directionList = new ArrayList<>();
     }
 
     //update the location of the location dot every 5 seconds based on your current location
@@ -191,17 +189,17 @@ public class NavigationActivity extends AppCompatActivity {
         double epsilon = 0.25854206621;
 
         //this determines whether you should go up a floor or down a floor (the value of z changes)
-        if(zChange(rArray1,rArray2,rArray3) > 0 ){
+        if(getDz(rArray1,rArray2,rArray3) > 0 ){
             //set the image to be an up arrow since we're going up a floor
             arrowImage.setRotation(90);
             arrowImage2.setRotation(90);
-            directionText.setText("Go up " + zChange(rArray1,rArray2,rArray3) + " floor(s).");
+            directionText.setText("Go up " + getDz(rArray1,rArray2,rArray3) + " floor(s).");
         }
-        else if(zChange(rArray1,rArray2,rArray3) < 0) {
+        else if(getDz(rArray1,rArray2,rArray3) < 0) {
             //set the image to be a down arrow since we're going down a floor
             arrowImage.setRotation(270);
             arrowImage2.setRotation(270);
-            directionText.setText("Go down " + -zChange(rArray1,rArray2,rArray3) + " floor(s).");
+            directionText.setText("Go down " + -getDz(rArray1,rArray2,rArray3) + " floor(s).");
         }
         //this determines whether the arrow shows right or left
         else {
@@ -232,15 +230,15 @@ public class NavigationActivity extends AppCompatActivity {
 
         //this determines whether you should go up a floor or down a floor (the value of z changes)
         // I might have to wrap code for vertical movement.
-        if(zChange(rArray1,rArray2,rArray3) > 0 ){
+        if(getDz(rArray1,rArray2,rArray3) > 0 ){
             //set the image to be an up arrow since we're going up a floor
 
-            directionText.setText("Go up " + zChange(rArray1,rArray2,rArray3) + " floor(s).");
+            directionText.setText("Go up " + getDz(rArray1,rArray2,rArray3) + " floor(s).");
         }
-        else if(zChange(rArray1,rArray2,rArray3) < 0) {
+        else if(getDz(rArray1,rArray2,rArray3) < 0) {
             //set the image to be a down arrow since we're going down a floor
 
-            directionText.setText("Go down " + -zChange(rArray1,rArray2,rArray3) + " floor(s).");
+            directionText.setText("Go down " + -getDz(rArray1,rArray2,rArray3) + " floor(s).");
         }
         //this determines whether the arrow shows right or left
         else {
@@ -263,19 +261,18 @@ public class NavigationActivity extends AppCompatActivity {
     }
 
     public static double determineDirection(double[] array1, double[] array2, double[] array3)  {
-        /* having (0,0) coordinates will break this formula in x or y.
-         shouldn't be a problem due to these being outside of use-case for map. */
+        // having (0,0) coordinates will break this formula in x or y.
+        // shouldn't be a problem due to these being outside of use-case for map.
         double mag1 = Math.sqrt(Math.pow(array1[1],2) + Math.pow(array1[2],2));
         double mag2 = Math.sqrt(Math.pow(array2[1],2) + Math.pow(array2[2],2));
         double mag3 = Math.sqrt(Math.pow(array3[1],2) + Math.pow(array3[2],2));
-
-        //this value is the direction of the vector sum, which determines the arrow positioning
-        return (array2[1]/mag2-array1[2]/mag1)*(array3[2]/mag3-array1[2]/mag1)-(array2[2]/mag2-array1[2]/mag1)*(array3[1]/mag3-array1[1]/mag1);
+        // this value is the direction of the vector sum, which determines the arrow positioning
+        return (array2[1]/mag2-array1[2]/mag1) * (array3[2]/mag3-array1[2]/mag1) - (array2[2]/mag2-array1[2]/mag1) * (array3[1]/mag3-array1[1]/mag1);
     }
 
-    public static double zChange(double[] zArray1, double[] zArray2, double[] zArray3) {
+    public static double getDz(double[] zArray1, double[] zArray2, double[] zArray3) {
         // subtract all 3. If dif=0 no change, if dif= pos go up, if dif= neg go down
-        return Math.round((zArray3[0]-zArray1[0])/3.6576);
+        return Math.round((zArray3[0] - zArray1[0]) / 3.6576);
     }
 
     public static double distanceFormula(double[] c1, double[] c2){
@@ -294,18 +291,13 @@ public class NavigationActivity extends AppCompatActivity {
         //cur is how far you are currently from the path
         double cur = 0.0;
         double min = 2147483647;
-
         for (int i = 0; i < coordinates.length; i++) {
-
             //get the distance between two coordinates
             cur = distanceFormula(myCord, coordinates[i]);
-
             if (cur < min) {
                 min = cur;
             }
-
         }
-
         if (min > maxRange) {
             return false;
         }
@@ -318,90 +310,165 @@ public class NavigationActivity extends AppCompatActivity {
     public double[][] formatPathData(double coordinatesArray[]){
         // formats the 1D array of doubles received from ArcGIS and turns them into a 2D array with coordinates in the
         // z,x,y format on each row
-        double[][] coordinatesList=new double[coordinatesArray.length/3][3];
+        double[][] coordinatesList = new double[coordinatesArray.length/3][3];
         for(int i=0; i<coordinatesArray.length; i++){
             coordinatesList[i/3][i%3]= coordinatesArray[i];
         }
-
         return coordinatesList;
-
     }
 
     public double[] RecalculatePath(double coordinates[][], double myCord[]){
-        if(shouldRecalculatePath(coordinates,myCord)== true){
-
+        if(shouldRecalculatePath(coordinates,myCord)){
             AsyncResponse asyncResponse = new AsyncResponse() {
                 @Override
                 public void returnResponse(String result) {
                     UiService.printString(result);
                 }
             };
-
-            WebServiceCaller.request(NavigationActivity.this, "https://ecsclark18.utdallas.edu/", "index.php", "CMX", MainActivity.etTo.getText().toString(), MainActivity.takeStairs, MainActivity.takeElevator, asyncResponse);
+            WebServiceCaller.request(NavigationActivity.this,
+                    "https://ecsclark18.utdallas.edu/",
+                    "index.php",
+                    "CMX", MainActivity.etTo.getText().toString(),
+                    MainActivity.takeStairs, MainActivity.takeElevator,
+                    asyncResponse);
             return null;
         }
         else
             return null;
-
     }
 
-    public String[] DirectionMessagesList(double[][] arr){
-        ArrayList<String> directionsList= new ArrayList<String>();
-        double distance=0.0;
-        double epsilon = Math.pow(0.25854206621,1);
-        for(int i=0;i<arr.length / 3;i++){
-            if(i==0 || i==arr.length-1)
+    private final int SLICES = 9;
+    private final int OFFSET_STEP = SLICES / 3;
+
+    public String[] directionMessagesList(double[][] arr){
+        ArrayList<String> directionsList = new ArrayList<String>();
+        String previousDirection = UNKNOWN;
+        String cardinalDirection = UNKNOWN;
+        double previousDistance = 0.0;
+        double currentDistance = 0.0;
+        double distance = 0.0;
+        double epsilon = Math.pow(0.25854206621, -9);
+        for (int i = 0; i < arr.length / SLICES; i++) {
+            if(i == 0 || i == arr.length-1) {
                 continue;
-            else
-            {
-
-                int offset = i * 3;
-
-                if (offset > arr.length - 3) {
+            } else {
+                int offset = i * SLICES;
+                if (offset > arr.length - SLICES) {
                     continue;
                 }
-
-                double[] previous= arr[offset-1];
-                double[] current= arr[offset];
-                double[] next= arr[offset+1];
-                double zChange = zChange(previous, current, next);
-                double Direction= determineDirection(previous,current,next);
-
-
-                if(zChange !=0 || Direction>epsilon || Direction<-epsilon )
-                {
-                    if(distance>0){
-                        directionsList.add("Go straight for " + Math.round(distance) + " meters" );
-                    }
-                    distance=0;
-
-                    if(zChange>0){
-                        directionsList.add("Go up");
-                    }
-                    if(zChange<-0){
-                        directionsList.add("Go down");
-                    }
-                    if(Direction>epsilon){
-                        directionsList.add("Turn right");
-                    }
-                    if(Direction<-epsilon){
-                        directionsList.add("Turn left");
-                    }
-
+                double[] previous = arr[offset - OFFSET_STEP];
+                double[] current = arr[offset];
+                double[] next = arr[offset + OFFSET_STEP];
+                double dz = getDz(previous, current, next);
+                cardinalDirection = getCardinalDirection(current, next);
+                if (!cardinalDirection.equals(previousDirection) && distance != 0) {
+                    currentDistance = distance - previousDistance;
+                    previousDistance = distance;
+                    generateDirectionMessage(currentDistance, dz, cardinalDirection, directionsList);
+                    previousDirection = cardinalDirection;
                 }
-                else
-                    distance+=distanceFormula(current,next);
+                distance += distanceFormula(current, next);
             }
-
         }
-
-        if(distance>0){
-            directionsList.add("Go straight for " + Math.round(distance) + " meters");
+        if (distance != 0 && distance != previousDistance) {
+            currentDistance = distance - previousDistance;
+            generateDistanceMessage(currentDistance, directionsList);
         }
-
         return directionsList.toArray(new String[directionsList.size()]);
     }
 
+    private final String NORTH = "N";
+    private final String SOUTH = "S";
+    private final String WEST = "W";
+    private final String EAST = "E";
+    private final String NORTHWEST = "NW";
+    private final String NORTHEAST = "NE";
+    private final String SOUTHWEST = "SW";
+    private final String SOUTHEAST = "SE";
+    private final String UNKNOWN = "U";
+
+    private final int X_INDEX = 1;
+    private final int Y_INDEX = 2;
+
+    public String getCardinalDirection(double[] current, double[] next) {
+        String cardinalDirection = UNKNOWN;
+        int horizontal = 0;
+        int vertical = 0;
+        double dx = abs(current[X_INDEX] - next[X_INDEX]);
+        double dy = abs(current[Y_INDEX] - next[Y_INDEX]);
+        if (current[X_INDEX] == next[X_INDEX]) {
+            horizontal = 0;
+        } else if (current[X_INDEX] > next[X_INDEX]) {
+            horizontal = -1;
+        } else if (current[X_INDEX] < next[X_INDEX]) {
+            horizontal = 1;
+        }
+        if (current[Y_INDEX] == next[Y_INDEX]) {
+            vertical = 0;
+        } else if (current[Y_INDEX] > next[Y_INDEX]) {
+            vertical = -1;
+        } else if (current[Y_INDEX] < next[Y_INDEX]) {
+            vertical = 1;
+        }
+        if (dx > dy) {
+            if (horizontal < 0) {
+                cardinalDirection = WEST;
+            } else if (horizontal > 0) {
+                cardinalDirection = EAST;
+            }
+        } else if (dx < dy) {
+            if (vertical < 0) {
+                cardinalDirection = SOUTH;
+            } else if (vertical > 0) {
+                cardinalDirection = NORTH;
+            }
+        }
+        return cardinalDirection;
+    }
+
+    public void generateDirectionMessage(double distance, double dz,
+                                           double direction, double epsilon,
+                                           ArrayList<String> directionsList) {
+        if(distance > 0){
+            generateDistanceMessage(distance, directionsList);
+        }
+        //distance = 0;
+        if(dz > 0){
+            directionsList.add("Go up");
+        }
+        if(dz < -0){
+            directionsList.add("Go down");
+        }
+        if(direction > epsilon){
+            directionsList.add("Turn right");
+        }
+        if(direction < -epsilon){
+            directionsList.add("Turn left");
+        }
+    }
+
+    public void generateDistanceMessage(double distance, ArrayList<String> directionsList) {
+        if(distance > 0){
+            directionsList.add("Go straight for " + Math.round(distance) + " meters");
+        }
+    }
+
+    public void generateDirectionMessage(double distance, double dz,
+                                         String cardinalDirection,
+                                         ArrayList<String> directionsList) {
+        if(distance > 0){
+            generateDistanceMessage(distance, directionsList);
+        }
+        if(dz > 0){
+            directionsList.add("Go up");
+        }
+        if(dz < -0){
+            directionsList.add("Go down");
+        }
+        if (!cardinalDirection.equals(UNKNOWN)) {
+            directionsList.add("Turn " + cardinalDirection);
+        }
+    }
 
     public void setDirectionTextViewListener() {
         directionText.setOnClickListener(new View.OnClickListener() {

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 public class DirectionsRecyclerViewAdapter extends RecyclerView.Adapter<DirectionsRecyclerViewAdapter.DirectionsViewHolder> {
+
     private List<String> mData;
     private LayoutInflater mInflater;
 
